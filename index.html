@@ -1913,13 +1913,13 @@
 
     function loadProgress() {
       const savedLc = localStorage.getItem('prepsphere_leetcode_completed');
-      state.completedProblems = savedLc ? JSON.parse(savedLc) : [];
+      state.completedProblems = savedLc ? JSON.parse(savedLc).map(String) : [];
 
       const savedPat = localStorage.getItem('prepsphere_patterns_completed');
-      state.completedPatterns = savedPat ? JSON.parse(savedPat) : [];
+      state.completedPatterns = savedPat ? JSON.parse(savedPat).map(String) : [];
 
       const savedApt = localStorage.getItem('prepsphere_aptitude_completed');
-      state.completedAptitudeTopics = savedApt ? JSON.parse(savedApt) : [];
+      state.completedAptitudeTopics = savedApt ? JSON.parse(savedApt).map(String) : [];
     }
 
     function saveProgress() {
@@ -2589,7 +2589,7 @@
       PATTERNS.forEach((p, idx) => {
         const btn = document.createElement('button');
         const isActive = state.activePatternIndex === idx;
-        const isCompleted = state.completedPatterns.includes(p.num);
+        const isCompleted = state.completedPatterns.some(pat => String(pat) === String(p.num));
         btn.className = `whitespace-nowrap px-4 py-2.5 font-outfit text-sm font-semibold border-b-2 transition-all flex items-center gap-1.5 ${isActive
             ? 'border-purple-500 text-purple-400'
             : 'border-transparent text-slate-400 hover:text-slate-200 hover:border-slate-800'
@@ -2615,7 +2615,7 @@
       const container = document.getElementById('pattern-detail-content');
       if (!container) return;
 
-      const isCompleted = state.completedPatterns.includes(p.num);
+      const isCompleted = state.completedPatterns.some(pat => String(pat) === String(p.num));
 
       const matchesSearch = !state.searchQuery ||
         p.label.toLowerCase().includes(state.searchQuery) ||
@@ -2994,7 +2994,7 @@
 
         filteredRows.forEach(([num, name, diff, pattern, why]) => {
           totalModuleProblems++;
-          const isCompleted = state.completedProblems.includes(num);
+          const isCompleted = state.completedProblems.some(prob => String(prob) === String(num));
           if (isCompleted) completedModuleProblems++;
 
           const leetcodeSlug = name
@@ -3085,54 +3085,57 @@
     }
 
     async function toggleProblemCompletion(problemId) {
-      const idx = state.completedProblems.indexOf(problemId);
+      const strId = String(problemId);
+      const idx = state.completedProblems.findIndex(p => String(p) === strId);
       const isDone = idx === -1;
       if (!isDone) {
         state.completedProblems.splice(idx, 1);
         showToast(`Problem #${problemId} marked incomplete.`);
       } else {
-        state.completedProblems.push(problemId);
+        state.completedProblems.push(strId);
         showToast(`Problem #${problemId} completed! Keep it up.`);
       }
       saveProgress();
       if (currentUser) {
-        await setCompletionCloud(currentUser.id, String(problemId), 'leetcode', '2000-01-01', isDone);
+        await setCompletionCloud(currentUser.id, strId, 'leetcode', '2000-01-01', isDone);
       }
       renderActiveViewContentOnly();
     }
 
     async function toggleAptitudeTopicCompletion(topicId) {
-      const idx = state.completedAptitudeTopics.indexOf(topicId);
+      const strId = String(topicId);
+      const idx = state.completedAptitudeTopics.findIndex(a => String(a) === strId);
       const isDone = idx === -1;
-      const displayName = topicId.includes('·') ? topicId.split('·')[1].trim() : topicId;
+      const displayName = strId.includes('·') ? strId.split('·')[1].trim() : strId;
       if (!isDone) {
         state.completedAptitudeTopics.splice(idx, 1);
         showToast(`Topic "${displayName}" marked incomplete.`);
       } else {
-        state.completedAptitudeTopics.push(topicId);
+        state.completedAptitudeTopics.push(strId);
         showToast(`Topic "${displayName}" completed!`);
       }
       saveProgress();
       if (currentUser) {
-        await setCompletionCloud(currentUser.id, String(topicId), 'aptitude', '2000-01-01', isDone);
+        await setCompletionCloud(currentUser.id, strId, 'aptitude', '2000-01-01', isDone);
       }
       renderActiveViewContentOnly();
     }
 
     async function togglePatternCompletion(patternNum) {
-      const idx = state.completedPatterns.indexOf(patternNum);
+      const strNum = String(patternNum);
+      const idx = state.completedPatterns.findIndex(p => String(p) === strNum);
       const isDone = idx === -1;
-      const pattern = PATTERNS.find(p => p.num === patternNum);
+      const pattern = PATTERNS.find(p => String(p.num) === strNum);
       if (!isDone) {
         state.completedPatterns.splice(idx, 1);
-        showToast(`Pattern "${pattern.label}" marked incomplete.`);
+        showToast(`Pattern "${pattern ? pattern.label : strNum}" marked incomplete.`);
       } else {
-        state.completedPatterns.push(patternNum);
-        showToast(`Pattern "${pattern.label}" marked Mastered!`);
+        state.completedPatterns.push(strNum);
+        showToast(`Pattern "${pattern ? pattern.label : strNum}" marked Mastered!`);
       }
       saveProgress();
       if (currentUser) {
-        await setCompletionCloud(currentUser.id, String(patternNum), 'pattern', '2000-01-01', isDone);
+        await setCompletionCloud(currentUser.id, strNum, 'pattern', '2000-01-01', isDone);
       }
       renderPatternTabs();
       renderPatternDetail();
@@ -3524,7 +3527,7 @@
           for (const comp of cloudCompletions) {
             const d = comp.date;
             if (comp.item_type === 'leetcode') {
-              cloudLc.push(isNaN(comp.item_id) ? comp.item_id : Number(comp.item_id));
+              cloudLc.push(String(comp.item_id));
             } else if (comp.item_type === 'pattern') {
               cloudPat.push(String(comp.item_id));
             } else if (comp.item_type === 'aptitude') {
