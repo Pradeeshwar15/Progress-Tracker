@@ -1807,8 +1807,8 @@
         }
         const parsed = JSON.parse(raw);
         parsed.settings = parsed.settings || { startDate: todayStr() };
-        parsed.schedules = parsed.schedules || [];
-        parsed.tasks = parsed.tasks || [];
+        parsed.schedules = (parsed.schedules && parsed.schedules.length > 0) ? parsed.schedules : getDefaultTrackerData().schedules;
+        parsed.tasks = (parsed.tasks && parsed.tasks.length > 0) ? parsed.tasks : getDefaultTrackerData().tasks;
         parsed.completions = parsed.completions || {};
         parsed.notes = parsed.notes || {};
         return parsed;
@@ -1831,15 +1831,18 @@
     }
 
     function isItemActiveOnDate(item, dateStr) {
-      if (item.deletedDate && dateStr >= item.deletedDate) return false;
-      if (dateStr < item.createdDate) return false;
+      if (!item) return false;
+      const createdDay = item.createdDate ? String(item.createdDate).split('T')[0] : '2020-01-01';
+      const deletedDay = item.deletedDate ? String(item.deletedDate).split('T')[0] : null;
+
+      if (deletedDay && dateStr >= deletedDay) return false;
 
       const dow = parseDate(dateStr).getDay(); // 0 Sun .. 6 Sat
       switch (item.repeat) {
-        case 'once': return dateStr === item.createdDate;
+        case 'once': return dateStr === createdDay;
         case 'daily': return true;
         case 'weekdays': return dow !== 0 && dow !== 6;
-        case 'weekly': return dow === parseDate(item.createdDate).getDay();
+        case 'weekly': return dow === parseDate(createdDay).getDay();
         default: return true;
       }
     }
@@ -3662,11 +3665,15 @@
             errDiv.innerHTML = '<span class="text-amber-400 font-medium leading-relaxed block bg-amber-500/10 p-2.5 rounded-lg border border-amber-500/20">Account registered! Check your email inbox to confirm registration, OR turn off <strong>Confirm email</strong> in your Supabase Auth Settings to log in immediately.</span>';
             showToast("Account created! Confirmation required.");
           } else {
+            updateAuthUI();
+            await syncCloudData();
             showToast("Account created & logged in successfully!");
             closeAuthModal();
           }
         } else {
           await loginUser(email, password);
+          updateAuthUI();
+          await syncCloudData();
           showToast("Logged in successfully!");
           closeAuthModal();
         }
@@ -3679,6 +3686,7 @@
     async function handleLogout() {
       await logoutUser();
       updateAuthUI();
+      renderActiveView();
       showToast("Logged out of account.");
       closeSettingsModal();
     }
@@ -3722,9 +3730,15 @@
       const heroUserName = document.getElementById('hero-user-name');
 
       if (currentUser) {
-        const displayName = currentUser.user_metadata?.name || currentUser.email.split('@')[0];
-        if (btnHeaderLogin) btnHeaderLogin.classList.add('hidden');
-        if (headerUserInfo) headerUserInfo.classList.remove('hidden');
+        const displayName = currentUser.user_metadata?.name || (currentUser.email ? currentUser.email.split('@')[0] : 'User');
+        if (btnHeaderLogin) {
+          btnHeaderLogin.classList.add('hidden');
+          btnHeaderLogin.style.display = 'none';
+        }
+        if (headerUserInfo) {
+          headerUserInfo.classList.remove('hidden');
+          headerUserInfo.style.display = 'flex';
+        }
         if (userDisplayName) userDisplayName.textContent = displayName;
         if (heroUserName) heroUserName.textContent = displayName;
 
@@ -3733,8 +3747,14 @@
           if (syncText) syncText.textContent = "Cloud Synced";
         }
       } else {
-        if (btnHeaderLogin) btnHeaderLogin.classList.remove('hidden');
-        if (headerUserInfo) headerUserInfo.classList.add('hidden');
+        if (btnHeaderLogin) {
+          btnHeaderLogin.classList.remove('hidden');
+          btnHeaderLogin.style.display = 'inline-flex';
+        }
+        if (headerUserInfo) {
+          headerUserInfo.classList.add('hidden');
+          headerUserInfo.style.display = 'none';
+        }
         if (heroUserName) heroUserName.textContent = "Pradeeshwar";
 
         if (syncBadge) {
