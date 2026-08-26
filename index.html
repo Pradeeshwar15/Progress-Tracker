@@ -7,12 +7,12 @@
   <title>Pradeeshwar — 90-Day Placement Prep & Study Hub</title>
   <!-- PWA Manifest -->
   <link rel="manifest" href="./manifest.json">
-  <meta name="theme-color" content="#070a13">
-  <!-- Google Fonts: Inter for UI, Outfit for Headers, JetBrains Mono for Code -->
+  <meta name="theme-color" content="#0B0F14">
+  <!-- Google Fonts: Inter for UI & JetBrains Mono for Code -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
     rel="stylesheet">
   <!-- Tabler Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
@@ -26,28 +26,26 @@
       theme: {
         extend: {
           colors: {
-            brand: {
-              50: '#f0f7ff',
-              100: '#e0effe',
-              200: '#bbdffc',
-              300: '#7ec4fa',
-              400: '#38a3f6',
-              500: '#0e85e5',
-              600: '#0065be',
-              700: '#02519a',
-              800: '#06457f',
-              900: '#0b3a6a',
-              950: '#082547',
+            dark: {
+              main: '#0B0F14',
+              card: '#111820',
+              elevated: '#161F29',
+              border: '#25303B',
             },
-            slate: {
-              850: '#151e30',
-              900: '#0f172a',
-              950: '#070a13',
+            accent: {
+              blue: '#4F8CFF',
+              green: '#22C55E',
+              amber: '#F59E0B',
+              red: '#EF4444',
+            },
+            text: {
+              main: '#F3F4F6',
+              muted: '#9CA3AF',
             }
           },
           fontFamily: {
             sans: ['Inter', 'sans-serif'],
-            outfit: ['Outfit', 'sans-serif'],
+            outfit: ['Inter', 'sans-serif'],
             mono: ['JetBrains Mono', 'monospace'],
           }
         }
@@ -55,80 +53,82 @@
     }
   </script>
   <style>
+    :root {
+      --bg-main: #0B0F14;
+      --bg-card: #111820;
+      --bg-elevated: #161F29;
+      --border-color: #25303B;
+      --accent-blue: #4F8CFF;
+      --accent-green: #22C55E;
+      --accent-amber: #F59E0B;
+      --text-main: #F3F4F6;
+      --text-muted: #9CA3AF;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      font-family: 'Inter', sans-serif;
+    }
+
     /* Custom thin scrollbar */
     ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
+      width: 5px;
+      height: 5px;
     }
 
     ::-webkit-scrollbar-track {
-      background: #0f172a;
+      background: #0B0F14;
     }
 
     ::-webkit-scrollbar-thumb {
-      background: #1e293b;
-      border-radius: 3px;
+      background: #25303B;
+      border-radius: 4px;
     }
 
     ::-webkit-scrollbar-thumb:hover {
-      background: #334155;
-    }
-
-    /* Glow animations */
-    .glow-hover:hover {
-      box-shadow: 0 0 25px rgba(59, 130, 246, 0.18);
+      background: #4F8CFF;
     }
 
     /* Progress States */
     .state-excellent {
-      color: #10b981;
-      border-color: rgba(16, 185, 129, 0.3);
+      color: #22C55E;
+      border-color: rgba(34, 197, 94, 0.3);
     }
     .state-good {
-      color: #06b6d4;
-      border-color: rgba(6, 182, 212, 0.3);
+      color: #4F8CFF;
+      border-color: rgba(79, 140, 255, 0.3);
     }
     .state-needs-improvement {
-      color: #f59e0b;
+      color: #F59E0B;
       border-color: rgba(245, 158, 11, 0.3);
     }
     .state-low {
-      color: #f43f5e;
-      border-color: rgba(244, 63, 94, 0.3);
+      color: #EF4444;
+      border-color: rgba(239, 68, 68, 0.3);
     }
 
-    .bg-state-excellent { background-color: #10b981; }
-    .bg-state-good { background-color: #06b6d4; }
-    .bg-state-needs-improvement { background-color: #f59e0b; }
-    .bg-state-low { background-color: #f43f5e; }
+    .bg-state-excellent { background-color: #22C55E; }
+    .bg-state-good { background-color: #4F8CFF; }
+    .bg-state-needs-improvement { background-color: #F59E0B; }
+    .bg-state-low { background-color: #EF4444; }
 
     /* Category Tags */
     .tag-badge {
       font-size: 10px;
-      font-weight: 700;
+      font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.04em;
       padding: 2px 8px;
       border-radius: 6px;
-      border-width: 1px;
+      border: 1px solid #25303B;
+      background: #161F29;
+      color: #9CA3AF;
     }
-    .tag-Health { background: rgba(16, 185, 129, 0.1); color: #34d399; border-color: rgba(16, 185, 129, 0.3); }
-    .tag-Fitness { background: rgba(6, 182, 212, 0.1); color: #22d3ee; border-color: rgba(6, 182, 212, 0.3); }
-    .tag-Placement { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border-color: rgba(59, 130, 246, 0.3); }
-    .tag-Learning { background: rgba(168, 85, 247, 0.1); color: #c084fc; border-color: rgba(168, 85, 247, 0.3); }
-    .tag-Project { background: rgba(245, 158, 11, 0.1); color: #fbbf24; border-color: rgba(245, 158, 11, 0.3); }
-    .tag-Grooming { background: rgba(236, 72, 153, 0.1); color: #f472b6; border-color: rgba(236, 72, 153, 0.3); }
-    .tag-Personal { background: rgba(148, 163, 184, 0.1); color: #cbd5e1; border-color: rgba(148, 163, 184, 0.3); }
-    .tag-Other { background: rgba(100, 116, 139, 0.1); color: #94a3b8; border-color: rgba(100, 116, 139, 0.3); }
-
-    /* Code highlight styling */
-    .comment { color: #64748b; font-style: italic; }
-    .kw { color: #3b82f6; font-weight: 600; }
-    .fn { color: #10b981; }
 
     /* Checked row effects */
     .item-completed {
-      opacity: 0.55;
+      opacity: 0.5;
       text-decoration: line-through;
     }
   </style>
@@ -144,142 +144,123 @@
 
   <!-- Top Sticky Header -->
   <header
-    class="sticky top-0 z-40 w-full backdrop-blur-md bg-slate-950/85 border-b border-slate-900 px-4 lg:px-8 py-3 flex items-center justify-between">
+    class="sticky top-0 z-40 w-full backdrop-blur-md bg-[#0B0F14]/90 border-b border-[#25303B] px-4 lg:px-6 py-2.5 flex items-center justify-between">
     <div class="flex items-center gap-3">
       <!-- Mobile Sidebar Toggle -->
       <button onclick="toggleMobileSidebar()"
-        class="lg:hidden p-2 text-slate-400 hover:text-slate-100 rounded-lg hover:bg-slate-900 transition"
+        class="lg:hidden p-1.5 text-[#9CA3AF] hover:text-[#F3F4F6] rounded-lg hover:bg-[#161F29] transition"
         aria-label="Toggle Sidebar">
-        <i class="ti ti-menu-2 text-xl"></i>
+        <i class="ti ti-menu-2 text-lg"></i>
       </button>
 
-      <!-- Brand Logo -->
-      <a href="#" onclick="navigateTo('home')" class="flex items-center gap-2.5">
-        <div
-          class="h-9 w-9 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-violet-600 flex items-center justify-center shadow-lg shadow-blue-500/20">
-          <i class="ti ti-activity-heartbeat text-white text-xl"></i>
-        </div>
-        <div class="flex flex-col">
-          <span
-            class="font-outfit font-extrabold text-lg leading-tight tracking-tight bg-gradient-to-r from-white via-slate-100 to-slate-300 bg-clip-text text-transparent">Pradeeshwar</span>
-          <span class="text-[10px] text-brand-400 font-semibold tracking-wide">90-DAY PREP HUB</span>
-        </div>
+      <!-- Brand Title -->
+      <a href="#" onclick="navigateTo('home')" class="flex items-center gap-2">
+        <span class="text-base font-semibold tracking-tight text-[#F3F4F6] flex items-center gap-2">
+          🚀 MY 90-DAY JOURNEY
+        </span>
       </a>
     </div>
 
     <!-- Search and Actions -->
-    <div class="flex items-center gap-3 md:gap-4">
-      <!-- Search Input -->
-      <div class="relative hidden sm:block w-52 md:w-72">
-        <i class="ti ti-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-sm"></i>
-        <input id="global-search" type="text" placeholder="Search topics, schedule, LeetCode..."
+    <div class="flex items-center gap-3">
+      <!-- Global Search -->
+      <div class="relative hidden sm:block w-48 md:w-64">
+        <i class="ti ti-search absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] text-xs"></i>
+        <input id="global-search" type="text" placeholder="Search..."
           oninput="handleGlobalSearch(this.value)"
-          class="w-full pl-9 pr-4 py-1.5 bg-slate-900/60 border border-slate-800 rounded-lg text-xs md:text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500/30 transition-all">
+          class="w-full pl-8 pr-3 py-1 bg-[#111820] border border-[#25303B] rounded-md text-xs text-[#F3F4F6] placeholder-[#9CA3AF] focus:outline-none focus:border-[#4F8CFF] transition-all">
         <button id="search-clear-btn" onclick="clearGlobalSearch()"
-          class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-200">
+          class="hidden absolute right-2 top-1/2 -translate-y-1/2 text-[#9CA3AF] hover:text-[#F3F4F6]">
           <i class="ti ti-x text-xs"></i>
         </button>
       </div>
 
       <!-- Header Streak Pill -->
-      <div class="flex items-center gap-1.5 px-3 py-1.5 bg-amber-500/10 border border-amber-500/20 rounded-lg" title="Current Active Streak">
-        <i class="ti ti-flame text-amber-400 text-base animate-pulse"></i>
-        <span id="header-streak-count" class="text-xs font-mono font-bold text-amber-300">0</span>
-        <span class="text-[11px] text-amber-400/80 font-medium hidden md:inline">Days Streak</span>
+      <div class="flex items-center gap-1 px-2.5 py-1 bg-[#161F29] border border-[#25303B] rounded-md" title="Current Active Streak">
+        <i class="ti ti-flame text-[#F59E0B] text-sm"></i>
+        <span id="header-streak-count" class="text-xs font-mono font-bold text-[#F59E0B]">0</span>
+        <span class="text-[11px] text-[#9CA3AF] font-medium hidden md:inline">Days</span>
       </div>
 
-      <!-- Network / Sync Status Indicator -->
-      <div id="sync-status-badge" class="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold" title="Cloud Sync Active">
-        <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
-        <span id="sync-status-text">Cloud Synced</span>
+      <!-- Sync Badge -->
+      <div id="sync-status-badge" class="hidden sm:flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-[#22C55E]/10 border border-[#22C55E]/20 text-[#22C55E] text-xs font-medium" title="Cloud Sync Active">
+        <span class="h-1.5 w-1.5 rounded-full bg-[#22C55E]"></span>
+        <span id="sync-status-text">Synced</span>
       </div>
 
-      <!-- User Profile / Auth Header Button -->
+      <!-- Notifications Icon -->
+      <button onclick="showToast('No new notifications')" class="p-1.5 text-[#9CA3AF] hover:text-[#F3F4F6] rounded-md hover:bg-[#161F29] transition" title="Notifications">
+        <i class="ti ti-bell text-base"></i>
+      </button>
+
+      <!-- Profile Header Pill -->
       <div id="auth-header-pill" class="flex items-center gap-2">
-        <button onclick="openAuthModal()" id="btn-header-login" class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-brand-600 hover:bg-brand-500 text-white rounded-lg transition shadow-md shadow-brand-900/20">
-          <i class="ti ti-user"></i> <span>Login / Sign Up</span>
+        <button onclick="openAuthModal()" id="btn-header-login" class="flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold bg-[#4F8CFF] hover:bg-[#3b79eb] text-white rounded-md transition">
+          <i class="ti ti-user text-xs"></i> <span>Login</span>
         </button>
-        <div id="header-user-info" class="hidden flex items-center gap-2 bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1">
-          <span id="user-display-name" class="text-xs font-semibold text-slate-200">User</span>
-          <button onclick="openSettingsModal()" class="text-slate-400 hover:text-white" title="Settings"><i class="ti ti-settings text-sm"></i></button>
-          <button onclick="handleLogout()" class="text-slate-400 hover:text-red-400" title="Logout"><i class="ti ti-logout text-sm"></i></button>
+        <div id="header-user-info" class="hidden flex items-center gap-2 bg-[#111820] border border-[#25303B] rounded-md px-2 py-1">
+          <span id="user-display-name" class="text-xs font-semibold text-[#F3F4F6]">User</span>
+          <button onclick="openSettingsModal()" class="text-[#9CA3AF] hover:text-[#F3F4F6]" title="Settings"><i class="ti ti-settings text-xs"></i></button>
+          <button onclick="handleLogout()" class="text-[#9CA3AF] hover:text-[#EF4444]" title="Logout"><i class="ti ti-logout text-xs"></i></button>
         </div>
-      </div>
-
-      <!-- Today's Routine Progress Indicator -->
-      <div
-        class="hidden lg:flex items-center gap-2.5 px-3 py-1.5 bg-slate-900/60 border border-slate-800/80 rounded-lg">
-        <span class="text-xs text-slate-400 font-medium">Today's Progress:</span>
-        <div class="w-16 bg-slate-800 h-2 rounded-full overflow-hidden">
-          <div id="header-today-progress-fill"
-            class="bg-gradient-to-r from-blue-500 to-emerald-400 h-full rounded-full transition-all duration-500"
-            style="width: 0%"></div>
-        </div>
-        <span id="header-today-progress-text" class="text-xs font-mono font-semibold text-emerald-400">0%</span>
-      </div>
-
-      <!-- Quick Track Navigation Bar Buttons -->
-      <div class="flex gap-1.5">
-        <button onclick="navigateTo('tracker')"
-          class="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-semibold bg-brand-600/20 border border-brand-500/40 rounded-lg text-brand-300 hover:bg-brand-600/30 transition">
-          <i class="ti ti-calendar-event text-brand-400"></i> <span class="hidden sm:inline">Tracker</span>
-        </button>
-        <button onclick="navigateTo('aptitude')"
-          class="hidden md:flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-semibold bg-slate-900 border border-slate-800 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition">
-          <i class="ti ti-brain text-blue-400"></i> Aptitude
-        </button>
-        <button onclick="navigateTo('leetcode')"
-          class="hidden md:flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-semibold bg-slate-900 border border-slate-800 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition">
-          <i class="ti ti-code text-emerald-400"></i> LeetCode
-        </button>
-        <button onclick="navigateTo('patterns')"
-          class="hidden md:flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-semibold bg-slate-900 border border-slate-800 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition">
-          <i class="ti ti-template text-purple-400"></i> Patterns
-        </button>
       </div>
     </div>
   </header>
 
   <div class="flex-1 flex overflow-hidden">
-    <!-- Sidebar Navigation -->
+    <!-- Sidebar Navigation (Desktop 230px) -->
     <div id="sidebar-backdrop" onclick="toggleMobileSidebar()"
-      class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-30 lg:hidden hidden"></div>
+      class="fixed inset-0 bg-[#0B0F14]/70 backdrop-blur-sm z-30 lg:hidden hidden"></div>
 
     <aside id="sidebar-nav"
-      class="fixed inset-y-0 left-0 transform -translate-x-full lg:translate-x-0 lg:static z-40 w-64 border-r border-slate-900 bg-slate-950 px-4 py-6 flex flex-col justify-between transition-transform duration-300 ease-in-out lg:z-0">
+      class="fixed inset-y-0 left-0 transform -translate-x-full lg:translate-x-0 lg:static z-40 w-[230px] border-r border-[#25303B] bg-[#0B0F14] px-3 py-4 flex flex-col justify-between transition-transform duration-200 ease-in-out lg:z-0 flex-shrink-0">
 
-      <div class="flex flex-col gap-6 overflow-y-auto max-h-[85vh] pr-1">
+      <div class="flex flex-col gap-5 overflow-y-auto max-h-[85vh] pr-1">
         <!-- Main Navigation -->
-        <div class="flex flex-col gap-1.5">
-          <span class="px-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Main Hub</span>
+        <div class="flex flex-col gap-1">
+          <span class="px-2 text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-wider">Navigation</span>
 
           <button onclick="navigateTo('home')" id="nav-home"
-            class="flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition text-slate-400 hover:text-slate-100 hover:bg-slate-900/60 w-full text-left">
-            <span class="flex items-center gap-2.5">
-              <i class="ti ti-smart-home text-lg"></i> Dashboard Home
+            class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-xs font-medium transition text-[#F3F4F6] bg-[#161F29] border border-[#25303B] w-full text-left">
+            <span class="flex items-center gap-2">
+              <i class="ti ti-smart-home text-sm text-[#4F8CFF]"></i> Today
             </span>
           </button>
 
           <button onclick="navigateTo('tracker')" id="nav-tracker"
-            class="flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition text-slate-400 hover:text-slate-100 hover:bg-slate-900/60 w-full text-left">
-            <span class="flex items-center gap-2.5">
-              <i class="ti ti-calendar-event text-lg text-brand-400"></i> 90-Day Tracker & History
+            class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-xs font-medium transition text-[#9CA3AF] hover:text-[#F3F4F6] hover:bg-[#111820] w-full text-left">
+            <span class="flex items-center gap-2">
+              <i class="ti ti-calendar-event text-sm"></i> Schedule
+            </span>
+          </button>
+
+          <button onclick="navigateTo('tracker')" id="nav-tasks"
+            class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-xs font-medium transition text-[#9CA3AF] hover:text-[#F3F4F6] hover:bg-[#111820] w-full text-left">
+            <span class="flex items-center gap-2">
+              <i class="ti ti-checkbox text-sm"></i> Checklist
+            </span>
+          </button>
+
+          <button onclick="navigateTo('leetcode')" id="nav-progress"
+            class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-xs font-medium transition text-[#9CA3AF] hover:text-[#F3F4F6] hover:bg-[#111820] w-full text-left">
+            <span class="flex items-center gap-2">
+              <i class="ti ti-chart-bar text-sm"></i> Progress
             </span>
           </button>
 
           <button onclick="navigateTo('patterns')" id="nav-patterns"
-            class="flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition text-slate-400 hover:text-slate-100 hover:bg-slate-900/60 w-full text-left">
-            <span class="flex items-center gap-2.5">
-              <i class="ti ti-template text-lg text-purple-400"></i> DSA Patterns
+            class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-xs font-medium transition text-[#9CA3AF] hover:text-[#F3F4F6] hover:bg-[#111820] w-full text-left">
+            <span class="flex items-center gap-2">
+              <i class="ti ti-template text-sm"></i> DSA Patterns
             </span>
           </button>
         </div>
 
         <!-- Aptitude Navigation -->
-        <div class="flex flex-col gap-1.5">
-          <div class="flex items-center justify-between px-3">
-            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Aptitude Mastery</span>
-            <button onclick="navigateTo('aptitude')" class="text-xs text-brand-400 hover:underline">View All</button>
+        <div class="flex flex-col gap-1">
+          <div class="flex items-center justify-between px-2">
+            <span class="text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-wider">Aptitude</span>
+            <button onclick="navigateTo('aptitude')" class="text-[11px] text-[#4F8CFF] hover:underline">View All</button>
           </div>
 
           <div id="sidebar-aptitude-modules" class="flex flex-col gap-0.5">
@@ -288,10 +269,10 @@
         </div>
 
         <!-- LeetCode Navigation -->
-        <div class="flex flex-col gap-1.5">
-          <div class="flex items-center justify-between px-3">
-            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">LeetCode Grind</span>
-            <button onclick="navigateTo('leetcode')" class="text-xs text-brand-400 hover:underline">View All</button>
+        <div class="flex flex-col gap-1">
+          <div class="flex items-center justify-between px-2">
+            <span class="text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-wider">LeetCode Top 75</span>
+            <button onclick="navigateTo('leetcode')" class="text-[11px] text-[#4F8CFF] hover:underline">View All</button>
           </div>
 
           <div id="sidebar-leetcode-modules" class="flex flex-col gap-0.5">
@@ -300,34 +281,27 @@
         </div>
       </div>
 
-      <!-- Quick Progress Widget -->
-      <div class="pt-4 border-t border-slate-900/80 mt-auto flex flex-col gap-3">
-        <div class="flex flex-col gap-1.5 px-3">
-          <div class="flex items-center justify-between text-xs">
-            <span class="text-slate-400 font-medium">LeetCode Progress</span>
-            <span id="sidebar-progress-fraction" class="text-slate-300 font-semibold font-mono">0 / 0</span>
+      <!-- Sidebar Progress & Quick Tools Widget -->
+      <div class="pt-3 border-t border-[#25303B] mt-auto flex flex-col gap-2.5">
+        <div class="flex flex-col gap-1 px-2">
+          <div class="flex items-center justify-between text-[11px]">
+            <span class="text-[#9CA3AF] font-medium">LeetCode Target</span>
+            <span id="sidebar-progress-fraction" class="text-[#F3F4F6] font-semibold font-mono">0 / 0</span>
           </div>
-          <div class="w-full bg-slate-900 h-2 rounded-full overflow-hidden border border-slate-800">
+          <div class="w-full bg-[#111820] h-1.5 rounded-full overflow-hidden border border-[#25303B]">
             <div id="sidebar-progress-fill"
-              class="bg-gradient-to-r from-emerald-500 to-teal-400 h-full rounded-full transition-all duration-500"
+              class="bg-[#4F8CFF] h-full rounded-full transition-all duration-300"
               style="width: 0%"></div>
           </div>
         </div>
 
-        <div class="flex items-center justify-between px-3 text-[11px] text-slate-500 flex-wrap gap-2">
-          <button onclick="openSettingsModal()" class="hover:text-brand-400 flex items-center gap-1 transition-colors" title="Settings & Cloud Setup">
-            <i class="ti ti-settings"></i> Settings
+        <div class="flex items-center justify-between px-2 text-[11px] text-[#9CA3AF]">
+          <button onclick="openSettingsModal()" class="hover:text-[#4F8CFF] flex items-center gap-1 transition-colors" title="Settings">
+            <i class="ti ti-settings text-xs"></i> Settings
           </button>
           <div class="flex gap-2">
-            <button onclick="exportTrackerData()" class="hover:text-brand-400 flex items-center gap-1 transition-colors" title="Export Backup JSON">
-              <i class="ti ti-download"></i> Export
-            </button>
-            <button onclick="triggerImport()" class="hover:text-purple-400 flex items-center gap-1 transition-colors" title="Import Backup JSON">
-              <i class="ti ti-upload"></i> Import
-            </button>
-            <button onclick="resetAllProgress()" class="hover:text-red-400 flex items-center gap-1 transition-colors" title="Reset All Data">
-              <i class="ti ti-rotate"></i> Reset
-            </button>
+            <button onclick="exportTrackerData()" class="hover:text-[#4F8CFF] transition-colors" title="Export Backup JSON">Export</button>
+            <button onclick="triggerImport()" class="hover:text-[#4F8CFF] transition-colors" title="Import Backup JSON">Import</button>
           </div>
         </div>
       </div>
@@ -340,209 +314,155 @@
       <div id="view-container" class="max-w-6xl mx-auto space-y-8">
 
         <!-- ================= HOME VIEW ================= -->
-        <section id="view-home" class="space-y-8 transition-opacity duration-300">
-          <!-- Welcome Hero Section -->
-          <div
-            class="relative overflow-hidden rounded-2xl bg-gradient-to-b from-slate-900 to-slate-950 border border-slate-800 px-6 py-8 md:p-10 shadow-xl shadow-blue-950/10">
-            <div class="absolute -top-24 -left-24 h-48 w-48 rounded-full bg-blue-500/10 blur-[80px]"></div>
-            <div class="absolute -bottom-24 -right-24 h-48 w-48 rounded-full bg-indigo-500/10 blur-[80px]"></div>
+        <section id="view-home" class="space-y-6">
+          <!-- Top Greeting Bar -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-1">
+            <div>
+              <h1 class="text-xl md:text-2xl font-semibold text-[#F3F4F6] flex items-center gap-2">
+                Good morning, <span id="hero-user-name">Pradeeshwar</span> 👋
+              </h1>
+              <p id="dash-date-sub" class="text-xs text-[#9CA3AF] mt-0.5">Today</p>
+            </div>
+            <div id="90day-motivation-pill" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#161F29] border border-[#25303B] text-xs text-[#9CA3AF]">
+              <i class="ti ti-flag text-[#4F8CFF]"></i>
+              <span id="journey-subtext-display">Let's build the habit.</span>
+            </div>
+          </div>
 
-            <div class="relative z-10 space-y-6 max-w-3xl">
+          <!-- 3 Primary Metric Cards Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <!-- Card 1: Today's Progress -->
+            <div class="bg-[#111820] border border-[#25303B] rounded-xl p-4 flex flex-col justify-between space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold text-[#9CA3AF] uppercase tracking-wider">Today's Progress</span>
+                <span id="dash-progress-state" class="text-xs font-medium px-2 py-0.5 rounded border border-[#25303B] bg-[#161F29] text-[#9CA3AF]">0%</span>
+              </div>
               <div class="space-y-2">
-                <span
-                  class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/20">
-                  <i class="ti ti-cloud-check text-emerald-400"></i> V2 Cloud-Synced Personal Progress Tracker
-                </span>
-                <h1
-                  class="font-outfit font-extrabold text-3xl md:text-5xl tracking-tight leading-none bg-gradient-to-r from-white via-slate-100 to-slate-300 bg-clip-text text-transparent">
-                  Welcome back, <span id="hero-user-name">Pradeeshwar</span>.
-                </h1>
-              </div>
-
-              <!-- Quote Generator -->
-              <div class="border-l-4 border-brand-500 pl-4 py-1.5 space-y-1">
-                <p id="quote-text"
-                  class="text-base md:text-lg text-slate-300 italic font-medium leading-relaxed transition-opacity duration-200">
-                  "Consistency beats intelligence. Keep showing up every single day."
-                </p>
-                <div class="flex items-center justify-between gap-4 mt-2">
-                  <span id="quote-author"
-                    class="text-xs md:text-sm text-slate-400 font-semibold transition-opacity duration-200">— Software Engineering Wisdom</span>
-                  <button onclick="cycleQuote()"
-                    class="p-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-900 transition-colors"
-                    title="New Quote">
-                    <i class="ti ti-refresh text-sm"></i>
-                  </button>
+                <div id="dash-progress-number" class="text-3xl font-bold text-[#F3F4F6]">0%</div>
+                <div class="w-full bg-[#25303B] h-2 rounded-full overflow-hidden">
+                  <div id="dash-progress-fill" class="h-full rounded-full transition-all duration-300 bg-[#4F8CFF]" style="width: 0%"></div>
                 </div>
+              </div>
+              <div class="flex justify-between text-xs text-[#9CA3AF] pt-1">
+                <span>Schedule: <strong id="dash-schedule-frac" class="text-[#F3F4F6]">0/0</strong></span>
+                <span>Checklist: <strong id="dash-checklist-frac" class="text-[#F3F4F6]">0/0</strong></span>
+              </div>
+            </div>
+
+            <!-- Card 2: Streak -->
+            <div class="bg-[#111820] border border-[#25303B] rounded-xl p-4 flex flex-col justify-between space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold text-[#9CA3AF] uppercase tracking-wider">Active Streak</span>
+                <span class="text-xs font-medium text-[#F59E0B] flex items-center gap-1"><i class="ti ti-flame text-[#F59E0B]"></i> Streak</span>
+              </div>
+              <div class="flex items-baseline gap-2">
+                <span id="stat-current-streak" class="text-3xl font-bold text-[#F59E0B]">0</span>
+                <span class="text-xs text-[#9CA3AF]">DAYS STREAK</span>
+              </div>
+              <div class="flex justify-between text-xs text-[#9CA3AF] pt-1 border-t border-[#25303B]/60">
+                <span>Best: <strong id="stat-best-streak" class="text-[#F3F4F6]">0</strong> days</span>
+                <span>Total Success: <strong id="stat-total-success" class="text-[#22C55E]">0</strong> days</span>
+              </div>
+            </div>
+
+            <!-- Card 3: Day X / 90 -->
+            <div class="bg-[#111820] border border-[#25303B] rounded-xl p-4 flex flex-col justify-between space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold text-[#9CA3AF] uppercase tracking-wider">90-Day Journey</span>
+                <span id="lane-pct" class="text-xs font-semibold text-[#4F8CFF]">0%</span>
+              </div>
+              <div class="space-y-2">
+                <div class="text-3xl font-bold text-[#F3F4F6]">
+                  Day <span id="lane-day-current">1</span> <span class="text-sm font-normal text-[#9CA3AF]">/ 90</span>
+                </div>
+                <div class="w-full bg-[#25303B] h-2 rounded-full overflow-hidden">
+                  <div id="lane-fill" class="h-full rounded-full transition-all duration-300 bg-[#4F8CFF]" style="width: 0%"></div>
+                </div>
+              </div>
+              <div class="text-xs text-[#9CA3AF] pt-1">
+                Phase: <strong id="journey-phase-title" class="text-[#F3F4F6]">Building Habit</strong>
               </div>
             </div>
           </div>
 
-          <!-- ================= DASHBOARD INTEGRATED TRACKER & ANALYTICS HERO ================= -->
-          <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 space-y-6 shadow-xl relative overflow-hidden">
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800/80 pb-4">
+          <!-- Schedule & Checklist Grid -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+            <!-- Today's Schedule Card -->
+            <div class="bg-[#111820] border border-[#25303B] rounded-xl p-5 space-y-4">
+              <div class="flex items-center justify-between border-b border-[#25303B] pb-3">
+                <h3 class="font-semibold text-sm text-[#F3F4F6] flex items-center gap-2">
+                  <i class="ti ti-clock text-[#4F8CFF]"></i> Today's Schedule
+                </h3>
+                <button onclick="openScheduleModal(null)" class="text-xs font-medium text-[#4F8CFF] hover:underline flex items-center gap-1">
+                  <i class="ti ti-plus text-xs"></i> Add Schedule
+                </button>
+              </div>
+              <div id="dash-schedule-list" class="space-y-3 max-h-80 overflow-y-auto pr-1">
+                <!-- Dynamically populated vertical timeline -->
+              </div>
+            </div>
+
+            <!-- Daily Task Checklist Card -->
+            <div class="bg-[#111820] border border-[#25303B] rounded-xl p-5 space-y-4">
+              <div class="flex items-center justify-between border-b border-[#25303B] pb-3">
+                <h3 class="font-semibold text-sm text-[#F3F4F6] flex items-center gap-2">
+                  <i class="ti ti-checkbox text-[#22C55E]"></i> Daily Checklist
+                </h3>
+                <button onclick="openTaskModal(null)" class="text-xs font-medium text-[#4F8CFF] hover:underline flex items-center gap-1">
+                  <i class="ti ti-plus text-xs"></i> Add Task
+                </button>
+              </div>
+              <div id="dash-checklist-list" class="space-y-2 max-h-80 overflow-y-auto pr-1">
+                <!-- Dynamically populated checklist -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Daily Reflection Journal Card -->
+          <div class="bg-[#111820] border border-[#25303B] rounded-xl p-5 space-y-4">
+            <div class="flex items-center justify-between border-b border-[#25303B] pb-3">
+              <h3 class="font-semibold text-sm text-[#F3F4F6] flex items-center gap-2">
+                <i class="ti ti-notes text-[#4F8CFF]"></i> Today's Reflection Journal
+              </h3>
+              <span id="note-saved-hint" class="text-xs text-[#22C55E] font-medium opacity-0 transition-opacity">✓ Saved</span>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
               <div>
-                <div class="flex items-center gap-2">
-                  <h2 class="font-outfit font-extrabold text-xl md:text-2xl text-white flex items-center gap-2">
-                    <i class="ti ti-chart-bar text-brand-400"></i> Today's Progress & Tracker Analytics
-                  </h2>
-                  <span id="dash-date-sub" class="text-xs font-medium text-slate-400 bg-slate-800 px-2.5 py-1 rounded-md">—</span>
-                </div>
-                <p class="text-xs md:text-sm text-slate-400 mt-1">Real-time daily schedule execution, task checklist completion, and streak history.</p>
+                <label class="block text-[#9CA3AF] mb-1 font-medium">What went well today?</label>
+                <textarea id="dash-note-went-well" placeholder="e.g. Completed 3 LeetCode problems" rows="2"
+                  class="w-full bg-[#161F29] border border-[#25303B] rounded-lg p-2.5 text-[#F3F4F6] placeholder-[#9CA3AF]/60 focus:outline-none focus:border-[#4F8CFF]"></textarea>
               </div>
-
-              <div class="flex items-center gap-2">
-                <button onclick="openScheduleModal(null)"
-                  class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-brand-600 hover:bg-brand-500 text-white rounded-lg transition shadow-md shadow-brand-900/20">
-                  <i class="ti ti-plus"></i> Add Schedule
-                </button>
-                <button onclick="openTaskModal(null)"
-                  class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-lg transition">
-                  <i class="ti ti-plus"></i> Add Task
-                </button>
+              <div>
+                <label class="block text-[#9CA3AF] mb-1 font-medium">What distracted me?</label>
+                <textarea id="dash-note-distracted" placeholder="e.g. Social media notifications" rows="2"
+                  class="w-full bg-[#161F29] border border-[#25303B] rounded-lg p-2.5 text-[#F3F4F6] placeholder-[#9CA3AF]/60 focus:outline-none focus:border-[#4F8CFF]"></textarea>
+              </div>
+              <div>
+                <label class="block text-[#9CA3AF] mb-1 font-medium">Tomorrow's priority focus</label>
+                <textarea id="dash-note-tomorrow" placeholder="e.g. Graph Algorithms" rows="2"
+                  class="w-full bg-[#161F29] border border-[#25303B] rounded-lg p-2.5 text-[#F3F4F6] placeholder-[#9CA3AF]/60 focus:outline-none focus:border-[#4F8CFF]"></textarea>
               </div>
             </div>
-
-            <!-- Progress & Stats Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <!-- Today's Overall Progress Card -->
-              <div class="md:col-span-1 bg-slate-950/70 border border-slate-800 rounded-xl p-4 flex flex-col justify-between space-y-3">
-                <div class="flex items-center justify-between">
-                  <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Today's Target</span>
-                  <span id="dash-progress-state" class="text-xs font-semibold px-2 py-0.5 rounded-full border state-low">Low</span>
-                </div>
-                <div class="space-y-1">
-                  <div id="dash-progress-number" class="font-outfit text-4xl font-extrabold text-white">0%</div>
-                  <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
-                    <div id="dash-progress-fill" class="h-full rounded-full transition-all duration-500 bg-state-low" style="width:0%"></div>
-                  </div>
-                </div>
-                <div class="flex justify-between text-xs text-slate-400 pt-1 border-t border-slate-900">
-                  <span>Schedule: <strong id="dash-schedule-frac" class="text-slate-200">0/0</strong></span>
-                  <span>Checklist: <strong id="dash-checklist-frac" class="text-slate-200">0/0</strong></span>
-                </div>
-              </div>
-
-              <!-- Streak & Success Tiles -->
-              <div class="md:col-span-3 grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <div class="bg-slate-950/50 border border-slate-800/80 rounded-xl p-4 flex items-center gap-3">
-                  <div class="h-10 w-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 text-xl">
-                    🔥
-                  </div>
-                  <div>
-                    <span class="block text-[11px] font-bold text-slate-400 uppercase">Current Streak</span>
-                    <span class="font-outfit text-xl font-bold text-white"><span id="stat-current-streak">0</span> <span class="text-xs font-normal text-slate-400">days</span></span>
-                  </div>
-                </div>
-
-                <div class="bg-slate-950/50 border border-slate-800/80 rounded-xl p-4 flex items-center gap-3">
-                  <div class="h-10 w-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400 text-xl">
-                    🏆
-                  </div>
-                  <div>
-                    <span class="block text-[11px] font-bold text-slate-400 uppercase">Best Streak</span>
-                    <span class="font-outfit text-xl font-bold text-white"><span id="stat-best-streak">0</span> <span class="text-xs font-normal text-slate-400">days</span></span>
-                  </div>
-                </div>
-
-                <div class="bg-slate-950/50 border border-slate-800/80 rounded-xl p-4 flex items-center gap-3">
-                  <div class="h-10 w-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 text-xl">
-                    ✅
-                  </div>
-                  <div>
-                    <span class="block text-[11px] font-bold text-slate-400 uppercase">Successful Days</span>
-                    <span class="font-outfit text-xl font-bold text-emerald-400" id="stat-total-success">0</span>
-                  </div>
-                </div>
-              </div>
+            <div class="flex justify-end">
+              <button onclick="saveDashboardNote()" class="px-3.5 py-1.5 bg-[#4F8CFF] hover:bg-[#3b79eb] text-white font-medium text-xs rounded-lg transition flex items-center gap-1.5">
+                <i class="ti ti-device-floppy text-xs"></i> Save Note
+              </button>
             </div>
-
-            <!-- 90-Day Journey Progress Bar -->
-            <div class="bg-slate-950/50 border border-slate-800/80 rounded-xl p-4 space-y-2">
-              <div class="flex items-center justify-between text-xs">
-                <span class="text-slate-300 font-semibold flex items-center gap-1.5"><i class="ti ti-flag text-brand-400"></i> 90-Day Preparation Journey</span>
-                <span class="text-slate-400">Day <strong id="lane-day-current" class="text-white">1</strong> / 90 (<span id="lane-pct" class="text-brand-400 font-semibold">0%</span> complete)</span>
-              </div>
-              <div class="relative w-full bg-slate-900 h-2.5 rounded-full overflow-hidden border border-slate-800">
-                <div id="lane-fill" class="bg-gradient-to-r from-blue-600 via-indigo-500 to-emerald-400 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
-              </div>
-            </div>
-
-            <!-- Today's Schedule & Checklist Split Columns -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <!-- Today's Schedule List -->
-              <div class="space-y-3">
-                <div class="flex items-center justify-between">
-                  <h3 class="font-outfit font-bold text-sm text-slate-300 uppercase tracking-wider flex items-center gap-2">
-                    <i class="ti ti-clock text-blue-400"></i> Today's Schedule Timeline
-                  </h3>
-                  <button onclick="navigateTo('tracker')" class="text-xs text-brand-400 hover:underline">Manage All</button>
-                </div>
-                <div id="dash-schedule-list" class="space-y-2 max-h-72 overflow-y-auto pr-1">
-                  <!-- Dynamically populated -->
-                </div>
-              </div>
-
-              <!-- Daily Checklist -->
-              <div class="space-y-3">
-                <div class="flex items-center justify-between">
-                  <h3 class="font-outfit font-bold text-sm text-slate-300 uppercase tracking-wider flex items-center gap-2">
-                    <i class="ti ti-checkbox text-emerald-400"></i> Daily Task Checklist
-                  </h3>
-                  <button onclick="navigateTo('tracker')" class="text-xs text-brand-400 hover:underline">Manage Tasks</button>
-                </div>
-                <div id="dash-checklist-list" class="space-y-2 max-h-72 overflow-y-auto pr-1">
-                  <!-- Dynamically populated -->
-                </div>
-              </div>
-            </div>
-
-            <!-- Dashboard Reflection Journal Widget -->
-            <div class="border-t border-slate-800/80 pt-5 space-y-4">
-              <div class="flex items-center justify-between">
-                <h3 class="font-outfit font-bold text-sm text-slate-300 uppercase tracking-wider flex items-center gap-2">
-                  <i class="ti ti-notes text-purple-400"></i> Today's Reflection Journal
-                </h3>
-                <span id="note-saved-hint" class="text-xs text-emerald-400 font-semibold opacity-0 transition-opacity">✓ Saved</span>
-              </div>
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
-                <div>
-                  <label class="block text-slate-400 mb-1 font-medium">What went well today?</label>
-                  <textarea id="dash-note-went-well" placeholder="e.g. Completed 3 LeetCode problems & stuck to timetable" rows="2"
-                    class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-slate-200 placeholder-slate-600 focus:outline-none focus:border-purple-500"></textarea>
-                </div>
-                <div>
-                  <label class="block text-slate-400 mb-1 font-medium">What distracted me?</label>
-                  <textarea id="dash-note-distracted" placeholder="e.g. Phone notifications after lunch" rows="2"
-                    class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-slate-200 placeholder-slate-600 focus:outline-none focus:border-purple-500"></textarea>
-                </div>
-                <div>
-                  <label class="block text-slate-400 mb-1 font-medium">Tomorrow's priority focus</label>
-                  <textarea id="dash-note-tomorrow" placeholder="e.g. Master Binary Search on answer space" rows="2"
-                    class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-slate-200 placeholder-slate-600 focus:outline-none focus:border-purple-500"></textarea>
-                </div>
-              </div>
-              <div class="flex justify-end">
-                <button onclick="saveDashboardNote()" class="px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white font-semibold text-xs rounded-lg transition shadow-md shadow-purple-900/20 flex items-center gap-1.5">
-                  <i class="ti ti-device-floppy"></i> Save Reflection Note
-                </button>
-              </div>
-            </div>
-
-            <!-- Weekly Productivity Chart Widget -->
-            <div class="border-t border-slate-800/80 pt-5 space-y-3">
-              <div class="flex items-center justify-between">
-                <h3 class="font-outfit font-bold text-sm text-slate-300 uppercase tracking-wider flex items-center gap-2">
-                  <i class="ti ti-chart-dots text-cyan-400"></i> Weekly Effort Analysis (Last 7 Days)
-                </h3>
-                <span class="text-xs text-slate-400">Weekly Average: <strong id="dash-week-avg-value" class="text-cyan-400 font-bold">0%</strong></span>
-              </div>
-              <div id="dash-week-chart" class="space-y-2 pt-1">
-                <!-- Dynamically populated bars -->
-              </div>
-            </div>
-
           </div>
+
+          <!-- Weekly Effort Analysis Card -->
+          <div class="bg-[#111820] border border-[#25303B] rounded-xl p-5 space-y-3">
+            <div class="flex items-center justify-between border-b border-[#25303B] pb-3">
+              <h3 class="font-semibold text-sm text-[#F3F4F6] flex items-center gap-2">
+                <i class="ti ti-chart-dots text-[#4F8CFF]"></i> Weekly Effort Analysis (Last 7 Days)
+              </h3>
+              <span class="text-xs text-[#9CA3AF]">Average: <strong id="dash-week-avg-value" class="text-[#4F8CFF]">0%</strong></span>
+            </div>
+            <div id="dash-week-chart" class="space-y-2 pt-1">
+              <!-- Dynamically populated bars -->
+            </div>
+          </div>
+        </section>
 
           <!-- Quick Navigation Cards to Other Modules -->
           <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -678,44 +598,44 @@
         </section>
 
         <!-- ================= 90-DAY ROUTINE & TRACKER VIEW ================= -->
-        <section id="view-tracker" class="hidden space-y-6 transition-opacity duration-300">
+        <section id="view-tracker" class="hidden space-y-6">
           <div class="flex items-center justify-between flex-wrap gap-3">
-            <nav class="flex items-center gap-2 text-xs md:text-sm text-slate-500 font-medium">
-              <a href="#" onclick="navigateTo('home')" class="hover:text-slate-300 flex items-center gap-1"><i
+            <nav class="flex items-center gap-2 text-xs md:text-sm text-[#9CA3AF] font-medium">
+              <a href="#" onclick="navigateTo('home')" class="hover:text-[#F3F4F6] flex items-center gap-1"><i
                   class="ti ti-smart-home"></i> Home</a>
               <i class="ti ti-chevron-right text-xs"></i>
-              <span class="text-slate-200 font-semibold">90-Day Placement Tracker</span>
+              <span class="text-[#F3F4F6] font-semibold">90-Day Placement Tracker</span>
             </nav>
             <div class="flex gap-2">
               <button onclick="openScheduleModal(null)"
-                class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-brand-600 hover:bg-brand-500 text-white rounded-lg transition shadow-md shadow-brand-900/20">
+                class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-[#4F8CFF] hover:bg-[#3b79eb] text-white rounded-md transition">
                 <i class="ti ti-plus"></i> Add Schedule
               </button>
               <button onclick="openTaskModal(null)"
-                class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-lg transition">
+                class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-[#161F29] border border-[#25303B] hover:border-[#4F8CFF] text-[#F3F4F6] rounded-md transition">
                 <i class="ti ti-plus"></i> Add Task
               </button>
             </div>
           </div>
 
-          <!-- Tracker Management Hero Section -->
-          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 md:p-8 space-y-6 shadow-xl">
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <!-- Tracker Management Section -->
+          <div class="bg-[#111820] border border-[#25303B] rounded-xl p-5 md:p-6 space-y-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#25303B] pb-4">
               <div class="space-y-1">
-                <h2 class="font-outfit font-extrabold text-2xl md:text-3xl text-white">Full Routine & History Manager</h2>
-                <p class="text-sm text-slate-400 max-w-xl">Configure daily schedules, edit recurrence rules, check off checklist tasks, and review past daily reflections.</p>
+                <h2 class="font-bold text-xl md:text-2xl text-[#F3F4F6]">Routine & History Manager</h2>
+                <p class="text-xs md:text-sm text-[#9CA3AF]">Configure daily schedules, edit recurrence rules, check off checklist tasks, and review past daily reflections.</p>
               </div>
             </div>
 
             <!-- Split columns for full schedule and full task management -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <!-- Full Today Schedule -->
               <div class="space-y-4">
-                <div class="flex items-center justify-between border-b border-slate-800 pb-2">
-                  <h3 class="font-outfit font-bold text-base text-slate-100 flex items-center gap-2">
-                    <i class="ti ti-clock text-blue-400"></i> Today's Schedule Items
+                <div class="flex items-center justify-between border-b border-[#25303B] pb-2">
+                  <h3 class="font-semibold text-sm text-[#F3F4F6] flex items-center gap-2">
+                    <i class="ti ti-clock text-[#4F8CFF]"></i> Today's Schedule Items
                   </h3>
-                  <button onclick="openScheduleModal(null)" class="text-xs text-brand-400 hover:underline">+ New Schedule</button>
+                  <button onclick="openScheduleModal(null)" class="text-xs text-[#4F8CFF] hover:underline">+ New Schedule</button>
                 </div>
                 <div id="tracker-schedule-list" class="space-y-2 max-h-[500px] overflow-y-auto pr-1">
                   <!-- Dynamically populated with Edit/Delete buttons -->
@@ -724,11 +644,11 @@
 
               <!-- Full Today Checklist -->
               <div class="space-y-4">
-                <div class="flex items-center justify-between border-b border-slate-800 pb-2">
-                  <h3 class="font-outfit font-bold text-base text-slate-100 flex items-center gap-2">
-                    <i class="ti ti-checkbox text-emerald-400"></i> Daily Checklist Items
+                <div class="flex items-center justify-between border-b border-[#25303B] pb-2">
+                  <h3 class="font-semibold text-sm text-[#F3F4F6] flex items-center gap-2">
+                    <i class="ti ti-checkbox text-[#22C55E]"></i> Daily Checklist Items
                   </h3>
-                  <button onclick="openTaskModal(null)" class="text-xs text-brand-400 hover:underline">+ New Task</button>
+                  <button onclick="openTaskModal(null)" class="text-xs text-[#4F8CFF] hover:underline">+ New Task</button>
                 </div>
                 <div id="tracker-checklist-list" class="space-y-2 max-h-[500px] overflow-y-auto pr-1">
                   <!-- Dynamically populated with Edit/Delete buttons -->
@@ -737,19 +657,19 @@
             </div>
 
             <!-- Historical Date Lookup Card -->
-            <div class="border-t border-slate-800 pt-6 space-y-4">
-              <div class="flex items-center justify-between">
-                <h3 class="font-outfit font-bold text-base text-slate-100 flex items-center gap-2">
-                  <i class="ti ti-calendar text-amber-400"></i> Browse Past History & Logged Reflection
+            <div class="border-t border-[#25303B] pt-5 space-y-4">
+              <div class="flex items-center justify-between flex-wrap gap-2">
+                <h3 class="font-semibold text-sm text-[#F3F4F6] flex items-center gap-2">
+                  <i class="ti ti-calendar text-[#F59E0B]"></i> Browse Past History & Logged Reflection
                 </h3>
                 <div class="flex items-center gap-2 text-xs">
-                  <span class="text-slate-400">Select Date:</span>
+                  <span class="text-[#9CA3AF]">Select Date:</span>
                   <input type="date" id="history-date-input" onchange="renderHistoryDetail(this.value)"
-                    class="bg-slate-950 border border-slate-800 text-slate-200 text-xs px-2.5 py-1.5 rounded-lg focus:outline-none focus:border-brand-500">
+                    class="bg-[#161F29] border border-[#25303B] text-[#F3F4F6] text-xs px-2.5 py-1 rounded-md focus:outline-none focus:border-[#4F8CFF]">
                 </div>
               </div>
 
-              <div id="history-detail-container" class="bg-slate-950 border border-slate-800/80 rounded-xl p-5 space-y-4">
+              <div id="history-detail-container" class="bg-[#161F29] border border-[#25303B] rounded-xl p-4 space-y-4">
                 <!-- Dynamically populated history lookup -->
               </div>
             </div>
@@ -757,127 +677,127 @@
         </section>
 
         <!-- ================= APTITUDE VIEW ================= -->
-        <section id="view-aptitude" class="hidden space-y-6 transition-opacity duration-300">
+        <section id="view-aptitude" class="hidden space-y-6">
           <div class="flex items-center justify-between flex-wrap gap-3">
-            <nav class="flex items-center gap-2 text-xs md:text-sm text-slate-500 font-medium">
-              <a href="#" onclick="navigateTo('home')" class="hover:text-slate-300 flex items-center gap-1"><i
+            <nav class="flex items-center gap-2 text-xs md:text-sm text-[#9CA3AF] font-medium">
+              <a href="#" onclick="navigateTo('home')" class="hover:text-[#F3F4F6] flex items-center gap-1"><i
                   class="ti ti-smart-home"></i> Home</a>
               <i class="ti ti-chevron-right text-xs"></i>
-              <span class="text-slate-200 font-semibold">Aptitude Mastery</span>
+              <span class="text-[#F3F4F6] font-semibold">Aptitude Mastery</span>
             </nav>
             <button onclick="navigateTo('home')"
-              class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-slate-900 border border-slate-800 hover:border-slate-700 rounded-lg text-slate-300 hover:text-white transition">
+              class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-[#161F29] border border-[#25303B] hover:border-[#4F8CFF] rounded-md text-[#9CA3AF] hover:text-[#F3F4F6] transition">
               <i class="ti ti-arrow-narrow-left"></i> Back to Home
             </button>
           </div>
 
           <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div class="space-y-1">
-              <h2 class="font-outfit font-extrabold text-2xl md:text-3xl text-white">IT Placement Aptitude Curriculum</h2>
-              <p class="text-sm text-slate-400 max-w-xl">High-frequency topics, speed shortcuts, and anti-trap strategies for TCS, Infosys, Accenture, and product firms.</p>
+              <h2 class="font-bold text-xl md:text-2xl text-[#F3F4F6]">IT Placement Aptitude Curriculum</h2>
+              <p class="text-xs md:text-sm text-[#9CA3AF] max-w-xl">High-frequency topics, speed shortcuts, and anti-trap strategies for TCS, Infosys, Accenture, and product firms.</p>
             </div>
 
-            <div class="bg-slate-900 border border-slate-800/80 rounded-xl p-4 flex items-center gap-4 min-w-[240px]">
+            <div class="bg-[#111820] border border-[#25303B] rounded-xl p-3.5 flex items-center gap-3.5 min-w-[240px]">
               <div
-                class="relative h-12 w-12 flex-shrink-0 flex items-center justify-center rounded-full bg-slate-800 border-2 border-blue-500/20">
-                <i class="ti ti-checkbox text-blue-400 text-xl"></i>
+                class="relative h-10 w-10 flex-shrink-0 flex items-center justify-center rounded-full bg-[#161F29] border border-[#4F8CFF]/30">
+                <i class="ti ti-checkbox text-[#4F8CFF] text-lg"></i>
               </div>
               <div class="flex-1 min-w-0">
-                <span class="block text-[10px] font-bold text-slate-500 uppercase tracking-wide">Aptitude Progress</span>
-                <span id="aptitude-progress-summary" class="block font-outfit text-base font-bold text-blue-400">0/36 (0%)</span>
-                <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden mt-1">
+                <span class="block text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-wide">Aptitude Progress</span>
+                <span id="aptitude-progress-summary" class="block font-bold text-sm text-[#4F8CFF]">0/36 (0%)</span>
+                <div class="w-full bg-[#25303B] h-1.5 rounded-full overflow-hidden mt-1">
                   <div id="aptitude-progress-bar-fill"
-                    class="bg-gradient-to-r from-blue-500 to-cyan-400 h-full rounded-full transition-all duration-500"
+                    class="bg-[#4F8CFF] h-full rounded-full transition-all duration-300"
                     style="width: 0%"></div>
                 </div>
               </div>
             </div>
           </div>
 
-          <div class="border-b border-slate-900">
+          <div class="border-b border-[#25303B]">
             <div id="aptitude-tabs" class="flex overflow-x-auto gap-2 pb-px max-w-full">
               <!-- Dynamically populated -->
             </div>
           </div>
 
           <div id="aptitude-module-content"
-            class="bg-slate-900 border border-slate-800 rounded-2xl p-6 md:p-8 space-y-8 shadow-xl">
+            class="bg-[#111820] border border-[#25303B] rounded-xl p-5 md:p-6 space-y-6">
             <!-- Dynamically populated by renderAptitudeModule() -->
           </div>
         </section>
 
         <!-- ================= LEETCODE VIEW ================= -->
-        <section id="view-leetcode" class="hidden space-y-6 transition-opacity duration-300">
+        <section id="view-leetcode" class="hidden space-y-6">
           <div class="flex items-center justify-between flex-wrap gap-3">
-            <nav class="flex items-center gap-2 text-xs md:text-sm text-slate-500 font-medium">
-              <a href="#" onclick="navigateTo('home')" class="hover:text-slate-300 flex items-center gap-1"><i
+            <nav class="flex items-center gap-2 text-xs md:text-sm text-[#9CA3AF] font-medium">
+              <a href="#" onclick="navigateTo('home')" class="hover:text-[#F3F4F6] flex items-center gap-1"><i
                   class="ti ti-smart-home"></i> Home</a>
               <i class="ti ti-chevron-right text-xs"></i>
-              <span class="text-slate-200 font-semibold">LeetCode Grind</span>
+              <span class="text-[#F3F4F6] font-semibold">LeetCode Grind</span>
             </nav>
             <button onclick="navigateTo('home')"
-              class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-slate-900 border border-slate-800 hover:border-slate-700 rounded-lg text-slate-300 hover:text-white transition">
+              class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-[#161F29] border border-[#25303B] hover:border-[#4F8CFF] rounded-md text-[#9CA3AF] hover:text-[#F3F4F6] transition">
               <i class="ti ti-arrow-narrow-left"></i> Back to Home
             </button>
           </div>
 
           <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div class="space-y-1">
-              <h2 class="font-outfit font-extrabold text-2xl md:text-3xl text-white">FAANG Interview Curriculum</h2>
-              <p class="text-sm text-slate-400 max-w-xl">Pattern-first study plan curated for 2026 hiring rounds at top-tier tech companies.</p>
+              <h2 class="font-bold text-xl md:text-2xl text-[#F3F4F6]">FAANG Interview Curriculum</h2>
+              <p class="text-xs md:text-sm text-[#9CA3AF] max-w-xl">Pattern-first study plan curated for 2026 hiring rounds at top-tier tech companies.</p>
             </div>
 
-            <div class="bg-slate-900 border border-slate-800/80 rounded-xl p-4 flex items-center gap-4 min-w-[240px]">
+            <div class="bg-[#111820] border border-[#25303B] rounded-xl p-3.5 flex items-center gap-3.5 min-w-[240px]">
               <div
-                class="relative h-12 w-12 flex-shrink-0 flex items-center justify-center rounded-full bg-slate-800 border-2 border-emerald-500/20">
-                <i class="ti ti-checkbox text-emerald-400 text-xl"></i>
+                class="relative h-10 w-10 flex-shrink-0 flex items-center justify-center rounded-full bg-[#161F29] border border-[#22C55E]/30">
+                <i class="ti ti-checkbox text-[#22C55E] text-lg"></i>
               </div>
               <div class="flex-1 min-w-0">
-                <span class="block text-[10px] font-bold text-slate-500 uppercase tracking-wide">Progress Tracker</span>
-                <span id="leetcode-progress-summary" class="block font-outfit text-base font-bold text-emerald-400">0/52 (0%)</span>
-                <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden mt-1">
+                <span class="block text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-wide">Progress Tracker</span>
+                <span id="leetcode-progress-summary" class="block font-bold text-sm text-[#22C55E]">0/52 (0%)</span>
+                <div class="w-full bg-[#25303B] h-1.5 rounded-full overflow-hidden mt-1">
                   <div id="leetcode-progress-bar-fill"
-                    class="bg-gradient-to-r from-emerald-500 to-teal-400 h-full rounded-full transition-all duration-500"
+                    class="bg-[#22C55E] h-full rounded-full transition-all duration-300"
                     style="width: 0%"></div>
                 </div>
               </div>
             </div>
           </div>
 
-          <div class="border-b border-slate-900">
+          <div class="border-b border-[#25303B]">
             <div id="leetcode-tabs" class="flex overflow-x-auto gap-2 pb-px max-w-full">
               <!-- Dynamically populated -->
             </div>
           </div>
 
           <div id="leetcode-module-content"
-            class="bg-slate-900 border border-slate-800 rounded-2xl p-6 md:p-8 space-y-8 shadow-xl">
+            class="bg-[#111820] border border-[#25303B] rounded-xl p-5 md:p-6 space-y-6">
             <!-- Dynamically populated by renderLeetcodeModule() -->
           </div>
         </section>
 
         <!-- ================= DSA PATTERNS VIEW ================= -->
-        <section id="view-patterns" class="hidden space-y-6 transition-opacity duration-300">
+        <section id="view-patterns" class="hidden space-y-6">
           <div class="flex items-center justify-between flex-wrap gap-3">
-            <nav class="flex items-center gap-2 text-xs md:text-sm text-slate-500 font-medium">
-              <a href="#" onclick="navigateTo('home')" class="hover:text-slate-300 flex items-center gap-1"><i
+            <nav class="flex items-center gap-2 text-xs md:text-sm text-[#9CA3AF] font-medium">
+              <a href="#" onclick="navigateTo('home')" class="hover:text-[#F3F4F6] flex items-center gap-1"><i
                   class="ti ti-smart-home"></i> Home</a>
               <i class="ti ti-chevron-right text-xs"></i>
-              <span class="text-slate-200 font-semibold">DSA Coding Patterns</span>
+              <span class="text-[#F3F4F6] font-semibold">DSA Coding Patterns</span>
             </nav>
             <button onclick="navigateTo('home')"
-              class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-slate-900 border border-slate-800 hover:border-slate-700 rounded-lg text-slate-300 hover:text-white transition">
+              class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-[#161F29] border border-[#25303B] hover:border-[#4F8CFF] rounded-md text-[#9CA3AF] hover:text-[#F3F4F6] transition">
               <i class="ti ti-arrow-narrow-left"></i> Back to Home
             </button>
           </div>
 
           <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div class="space-y-1">
-              <h2 class="font-outfit font-extrabold text-2xl md:text-3xl text-white">Master DSA Pattern Library</h2>
-              <p class="text-sm text-slate-400 max-w-xl">10 essential algorithmic blueprints with invariants, pitfalls, and gold standard problems for coding interviews.</p>
+              <h2 class="font-bold text-xl md:text-2xl text-[#F3F4F6]">Master DSA Pattern Library</h2>
+              <p class="text-xs md:text-sm text-[#9CA3AF] max-w-xl">10 essential algorithmic blueprints with invariants, pitfalls, and gold standard problems for coding interviews.</p>
             </div>
 
-            <div class="bg-slate-900 border border-slate-800/80 rounded-xl p-4 flex items-center gap-4 min-w-[240px]">
+            <div class="bg-[#111820] border border-[#25303B] rounded-xl p-3.5 flex items-center gap-3.5 min-w-[240px]">
               <div
                 class="relative h-12 w-12 flex-shrink-0 flex items-center justify-center rounded-full bg-slate-800 border-2 border-purple-500/20">
                 <i class="ti ti-checkbox text-purple-400 text-xl"></i>
@@ -2144,62 +2064,120 @@
     function renderDashboardHome() {
       const today = todayStr();
       const progress = computeDailyProgress(trackerData, today);
-      const stateObj = progressState(progress.overall);
 
-      document.getElementById('dash-date-sub').textContent = formatLongDate(today);
-      document.getElementById('dash-progress-number').textContent = progress.overallRounded + '%';
+      const subElem = document.getElementById('dash-date-sub');
+      if (subElem) subElem.textContent = formatLongDate(today);
+
+      const numElem = document.getElementById('dash-progress-number');
+      if (numElem) numElem.textContent = progress.overallRounded + '%';
 
       const fill = document.getElementById('dash-progress-fill');
-      fill.style.width = progress.overallRounded + '%';
-      fill.className = `h-full rounded-full transition-all duration-500 ${stateObj.bgClass}`;
+      if (fill) {
+        fill.style.width = progress.overallRounded + '%';
+        // Switch progress indicator to green (#22C55E) when 80%+
+        if (progress.overallRounded >= 80) {
+          fill.className = 'h-full rounded-full transition-all duration-300 bg-[#22C55E]';
+        } else {
+          fill.className = 'h-full rounded-full transition-all duration-300 bg-[#4F8CFF]';
+        }
+      }
 
       const stateLabel = document.getElementById('dash-progress-state');
-      stateLabel.textContent = stateObj.label;
-      stateLabel.className = `text-xs font-semibold px-2.5 py-0.5 rounded-full border ${stateObj.className}`;
+      if (stateLabel) {
+        stateLabel.textContent = progress.overallRounded >= 80 ? 'Excellent' : progress.overallRounded >= 50 ? 'Good' : 'In Progress';
+        stateLabel.className = `text-xs font-medium px-2 py-0.5 rounded border ${progress.overallRounded >= 80 ? 'border-[#22C55E]/30 bg-[#22C55E]/10 text-[#22C55E]' : 'border-[#25303B] bg-[#161F29] text-[#9CA3AF]'}`;
+      }
 
-      document.getElementById('dash-schedule-frac').textContent = `${progress.scheduleDone}/${progress.scheduleTotal}`;
-      document.getElementById('dash-checklist-frac').textContent = `${progress.taskDone}/${progress.taskTotal}`;
+      const schFrac = document.getElementById('dash-schedule-frac');
+      if (schFrac) schFrac.textContent = `${progress.scheduleDone}/${progress.scheduleTotal}`;
+
+      const chkFrac = document.getElementById('dash-checklist-frac');
+      if (chkFrac) chkFrac.textContent = `${progress.taskDone}/${progress.taskTotal}`;
 
       const streaks = computeStreaks(trackerData);
-      document.getElementById('stat-current-streak').textContent = streaks.currentStreak;
-      document.getElementById('stat-best-streak').textContent = streaks.bestStreak;
-      document.getElementById('stat-total-success').textContent = streaks.totalSuccessDays;
-      document.getElementById('header-streak-count').textContent = streaks.currentStreak;
+      const currStrk = document.getElementById('stat-current-streak');
+      if (currStrk) currStrk.textContent = streaks.currentStreak;
+
+      const bestStrk = document.getElementById('stat-best-streak');
+      if (bestStrk) bestStrk.textContent = streaks.bestStreak;
+
+      const totSucc = document.getElementById('stat-total-success');
+      if (totSucc) totSucc.textContent = streaks.totalSuccessDays;
+
+      const hdrStrk = document.getElementById('header-streak-count');
+      if (hdrStrk) hdrStrk.textContent = streaks.currentStreak;
 
       const journey = compute90DayInfo(trackerData);
-      document.getElementById('lane-day-current').textContent = journey.currentDay;
-      document.getElementById('lane-pct').textContent = journey.pct + '%';
-      document.getElementById('lane-fill').style.width = journey.pct + '%';
+      const dayCur = document.getElementById('lane-day-current');
+      if (dayCur) dayCur.textContent = journey.currentDay;
+
+      const lanePct = document.getElementById('lane-pct');
+      if (lanePct) lanePct.textContent = journey.pct + '%';
+
+      const laneFill = document.getElementById('lane-fill');
+      if (laneFill) laneFill.style.width = journey.pct + '%';
+
+      // Update 90-day journey dynamic subtext & phase
+      const journeySubtext = document.getElementById('journey-subtext-display');
+      const journeyPhase = document.getElementById('journey-phase-title');
+      const day = journey.currentDay;
+      let phaseTitle = "Building Habit";
+      let subtextMsg = "Let's build the habit.";
+      if (day > 75) {
+        phaseTitle = "Mastery Achieved";
+        subtextMsg = "You finished the journey. 🚀";
+      } else if (day > 45) {
+        phaseTitle = "Becoming Consistent";
+        subtextMsg = "You're becoming consistent.";
+      } else if (day > 15) {
+        phaseTitle = "Building Momentum";
+        subtextMsg = "You're building momentum.";
+      }
+      if (journeySubtext) journeySubtext.textContent = subtextMsg;
+      if (journeyPhase) journeyPhase.textContent = phaseTitle;
 
       // Header progress bar
-      document.getElementById('header-today-progress-fill').style.width = progress.overallRounded + '%';
-      document.getElementById('header-today-progress-text').textContent = progress.overallRounded + '%';
+      const hdrFill = document.getElementById('header-today-progress-fill');
+      if (hdrFill) hdrFill.style.width = progress.overallRounded + '%';
+      const hdrTxt = document.getElementById('header-today-progress-text');
+      if (hdrTxt) hdrTxt.textContent = progress.overallRounded + '%';
 
-      // Today's schedule timeline on dashboard
+      // Today's schedule vertical timeline on dashboard
       const schedules = getActiveSchedulesForDate(trackerData, today);
       const filteredSchedules = schedules.filter(s =>
         !state.searchQuery || s.activity.toLowerCase().includes(state.searchQuery) || s.category.toLowerCase().includes(state.searchQuery)
       );
 
       const schList = document.getElementById('dash-schedule-list');
-      if (filteredSchedules.length === 0) {
-        schList.innerHTML = `<div class="p-4 bg-slate-950/40 border border-slate-800 rounded-xl text-center text-xs text-slate-500">No schedule items for today yet. Tap "+ Add Schedule" above.</div>`;
-      } else {
-        schList.innerHTML = filteredSchedules.map(item => {
-          const done = isScheduleDone(trackerData, today, item.id);
-          return `
-            <div class="flex items-center justify-between p-2.5 bg-slate-950/60 border border-slate-800/80 rounded-xl hover:border-slate-700 transition ${done ? 'opacity-50' : ''}">
-              <div class="flex items-center gap-3 min-w-0">
-                <button onclick="toggleSchedule('${item.id}')" class="h-5 w-5 rounded border ${done ? 'bg-emerald-500 border-emerald-400 text-white' : 'border-slate-700 bg-slate-900 hover:border-brand-500'} flex items-center justify-center text-xs transition flex-shrink-0">
-                  ${done ? '✓' : ''}
-                </button>
-                <span class="text-xs font-mono font-semibold text-slate-400 whitespace-nowrap">${item.startTime}</span>
-                <span class="text-xs font-semibold text-slate-200 truncate ${done ? 'line-through' : ''}">${escapeHtml(item.activity)}</span>
-              </div>
-              <span class="tag-badge tag-${item.category} ml-2 flex-shrink-0">${item.category}</span>
+      if (schList) {
+        if (filteredSchedules.length === 0) {
+          schList.innerHTML = `<div class="p-4 bg-[#161F29] border border-[#25303B] rounded-xl text-center text-xs text-[#9CA3AF]">No schedule items for today. Click "+ Add Schedule" above.</div>`;
+        } else {
+          schList.innerHTML = `
+            <div class="relative pl-6 space-y-3.5 before:absolute before:left-2 before:top-2 before:bottom-2 before:w-0.5 before:bg-[#25303B]">
+              ${filteredSchedules.map(item => {
+                const done = isScheduleDone(trackerData, today, item.id);
+                return `
+                  <div class="relative flex items-center justify-between group">
+                    <div class="absolute -left-6 top-1/2 -translate-y-1/2 w-4 h-4 rounded-full border-2 ${done ? 'border-[#22C55E] bg-[#22C55E]' : 'border-[#4F8CFF] bg-[#111820]'} flex items-center justify-center transition-all">
+                      <span class="w-1.5 h-1.5 rounded-full ${done ? 'bg-white' : 'bg-[#4F8CFF]'}"></span>
+                    </div>
+                    <div class="flex items-center gap-3 min-w-0">
+                      <span class="text-xs font-mono font-semibold text-[#4F8CFF] min-w-[48px]">${item.startTime}</span>
+                      <span class="text-xs md:text-sm font-medium text-[#F3F4F6] truncate ${done ? 'line-through text-[#9CA3AF]' : ''}">${escapeHtml(item.activity)}</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <span class="tag-badge">${item.category}</span>
+                      <button onclick="toggleSchedule('${item.id}')" class="h-6 w-6 rounded-full border ${done ? 'border-[#22C55E] bg-[#22C55E]/10 text-[#22C55E]' : 'border-[#25303B] bg-[#161F29] text-[#9CA3AF] hover:border-[#4F8CFF] hover:text-[#4F8CFF]'} flex items-center justify-center text-xs transition">
+                        ${done ? '✓' : '○'}
+                      </button>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
             </div>
           `;
-        }).join('');
+        }
       }
 
       // Today's daily checklist on dashboard
@@ -2209,48 +2187,56 @@
       );
 
       const taskList = document.getElementById('dash-checklist-list');
-      if (filteredTasks.length === 0) {
-        taskList.innerHTML = `<div class="p-4 bg-slate-950/40 border border-slate-800 rounded-xl text-center text-xs text-slate-500">No tasks for today yet. Tap "+ Add Task" above.</div>`;
-      } else {
-        taskList.innerHTML = filteredTasks.map(item => {
-          const done = isTaskDone(trackerData, today, item.id);
-          return `
-            <div class="flex items-center justify-between p-2.5 bg-slate-950/60 border border-slate-800/80 rounded-xl hover:border-slate-700 transition ${done ? 'opacity-50' : ''}">
-              <div class="flex items-center gap-3 min-w-0">
-                <button onclick="toggleTask('${item.id}')" class="h-5 w-5 rounded border ${done ? 'bg-emerald-500 border-emerald-400 text-white' : 'border-slate-700 bg-slate-900 hover:border-emerald-500'} flex items-center justify-center text-xs transition flex-shrink-0">
-                  ${done ? '✓' : ''}
-                </button>
-                <span class="text-xs font-semibold text-slate-200 truncate ${done ? 'line-through' : ''}">${escapeHtml(item.name)}</span>
+      if (taskList) {
+        if (filteredTasks.length === 0) {
+          taskList.innerHTML = `<div class="p-4 bg-[#161F29] border border-[#25303B] rounded-xl text-center text-xs text-[#9CA3AF]">No tasks for today. Click "+ Add Task" above.</div>`;
+        } else {
+          taskList.innerHTML = filteredTasks.map(item => {
+            const done = isTaskDone(trackerData, today, item.id);
+            return `
+              <div class="flex items-center justify-between p-2.5 bg-[#161F29] border border-[#25303B] rounded-xl hover:border-[#4F8CFF]/50 transition ${done ? 'opacity-50' : ''}">
+                <div class="flex items-center gap-3 min-w-0">
+                  <button onclick="toggleTask('${item.id}')" class="h-6 w-6 rounded-full border ${done ? 'border-[#22C55E] bg-[#22C55E]/10 text-[#22C55E]' : 'border-[#25303B] bg-[#111820] text-[#9CA3AF] hover:border-[#4F8CFF] hover:text-[#4F8CFF]'} flex items-center justify-center text-xs font-medium transition flex-shrink-0">
+                    ${done ? '✓' : '○'}
+                  </button>
+                  <span class="text-xs md:text-sm font-medium text-[#F3F4F6] truncate ${done ? 'line-through text-[#9CA3AF]' : ''}">${escapeHtml(item.name)}</span>
+                </div>
+                <span class="tag-badge ml-2 flex-shrink-0">${item.category}</span>
               </div>
-              <span class="tag-badge tag-${item.category} ml-2 flex-shrink-0">${item.category}</span>
-            </div>
-          `;
-        }).join('');
+            `;
+          }).join('');
+        }
       }
 
       // Populate dashboard reflection notes
       const note = getNote(trackerData, today);
-      document.getElementById('dash-note-went-well').value = note.wentWell;
-      document.getElementById('dash-note-distracted').value = note.distracted;
-      document.getElementById('dash-note-tomorrow').value = note.tomorrow;
+      const wentElem = document.getElementById('dash-note-went-well');
+      if (wentElem) wentElem.value = note.wentWell;
+      const distElem = document.getElementById('dash-note-distracted');
+      if (distElem) distElem.value = note.distracted;
+      const tomElem = document.getElementById('dash-note-tomorrow');
+      if (tomElem) tomElem.value = note.tomorrow;
 
       // Populate weekly chart
       const weekly = computeWeekly(trackerData, today);
-      document.getElementById('dash-week-avg-value').textContent = weekly.average + '%';
+      const avgElem = document.getElementById('dash-week-avg-value');
+      if (avgElem) avgElem.textContent = weekly.average + '%';
 
       const chartContainer = document.getElementById('dash-week-chart');
-      chartContainer.innerHTML = weekly.days.map(d => {
-        const stateClass = progressState(d.pct).bgClass;
-        return `
-          <div class="flex items-center gap-3 text-xs">
-            <span class="w-8 font-semibold text-slate-400">${d.label}</span>
-            <div class="flex-1 bg-slate-950 h-3 rounded-full overflow-hidden border border-slate-800/60">
-              <div class="${stateClass} h-full rounded-full transition-all duration-500" style="width:${d.pct}%"></div>
+      if (chartContainer) {
+        chartContainer.innerHTML = weekly.days.map(d => {
+          const barColor = d.pct >= 80 ? 'bg-[#22C55E]' : 'bg-[#4F8CFF]';
+          return `
+            <div class="flex items-center gap-3 text-xs">
+              <span class="w-8 font-semibold text-[#9CA3AF]">${d.label}</span>
+              <div class="flex-1 bg-[#161F29] h-2.5 rounded-full overflow-hidden border border-[#25303B]">
+                <div class="${barColor} h-full rounded-full transition-all duration-300" style="width:${d.pct}%"></div>
+              </div>
+              <span class="w-10 text-right font-mono font-semibold text-[#F3F4F6]">${d.pct}%</span>
             </div>
-            <span class="w-10 text-right font-mono font-semibold text-slate-300">${d.pct}%</span>
-          </div>
-        `;
-      }).join('');
+          `;
+        }).join('');
+      }
     }
 
     async function saveDashboardNote() {
@@ -3603,6 +3589,30 @@
       document.getElementById('quote-author').textContent = `— ${quote.author}`;
     });
   </script>
+  <!-- Mobile Bottom Navigation Bar (Linear + Notion Mobile UX) -->
+  <nav class="fixed bottom-0 left-0 right-0 z-50 bg-[#111820]/95 backdrop-blur-md border-t border-[#25303B] px-3 py-2 flex items-center justify-around lg:hidden shadow-xl">
+    <button onclick="navigateTo('home')" class="flex flex-col items-center gap-0.5 text-[#9CA3AF] hover:text-[#4F8CFF] transition focus:text-[#4F8CFF]">
+      <i class="ti ti-smart-home text-lg"></i>
+      <span class="text-[10px] font-medium">Today</span>
+    </button>
+    <button onclick="navigateTo('tracker')" class="flex flex-col items-center gap-0.5 text-[#9CA3AF] hover:text-[#4F8CFF] transition focus:text-[#4F8CFF]">
+      <i class="ti ti-calendar-event text-lg"></i>
+      <span class="text-[10px] font-medium">Schedule</span>
+    </button>
+    <button onclick="navigateTo('tracker')" class="flex flex-col items-center gap-0.5 text-[#9CA3AF] hover:text-[#4F8CFF] transition focus:text-[#4F8CFF]">
+      <i class="ti ti-checkbox text-lg"></i>
+      <span class="text-[10px] font-medium">Tasks</span>
+    </button>
+    <button onclick="navigateTo('leetcode')" class="flex flex-col items-center gap-0.5 text-[#9CA3AF] hover:text-[#4F8CFF] transition focus:text-[#4F8CFF]">
+      <i class="ti ti-chart-bar text-lg"></i>
+      <span class="text-[10px] font-medium">Progress</span>
+    </button>
+    <button onclick="openSettingsModal()" class="flex flex-col items-center gap-0.5 text-[#9CA3AF] hover:text-[#4F8CFF] transition focus:text-[#4F8CFF]">
+      <i class="ti ti-settings text-lg"></i>
+      <span class="text-[10px] font-medium">Settings</span>
+    </button>
+  </nav>
+
 </body>
 
 </html>
