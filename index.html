@@ -1672,13 +1672,76 @@
       return h * 60 + min;
     }
 
+    function deduplicateTrackerData() {
+      if (!trackerData) return;
+      let changed = false;
+
+      // 1. Deduplicate Tasks
+      if (Array.isArray(trackerData.tasks)) {
+        const seenTasks = new Map();
+        const uniqueTasks = [];
+        const duplicateTaskIds = [];
+
+        for (const t of trackerData.tasks) {
+          if (!t) continue;
+          const key = `${(t.name || '').trim().toLowerCase()}|${(t.category || 'Placement').toLowerCase()}|${(t.repeat || 'daily').toLowerCase()}`;
+          if (seenTasks.has(key)) {
+            if (t.id && String(t.id).length > 20) {
+              duplicateTaskIds.push(t.id);
+            }
+            changed = true;
+          } else {
+            seenTasks.set(key, t);
+            uniqueTasks.push(t);
+          }
+        }
+        trackerData.tasks = uniqueTasks;
+
+        if (currentUser && duplicateTaskIds.length > 0) {
+          duplicateTaskIds.forEach(id => deleteTaskCloud(id));
+        }
+      }
+
+      // 2. Deduplicate Schedules
+      if (Array.isArray(trackerData.schedules)) {
+        const seenSchedules = new Map();
+        const uniqueSchedules = [];
+        const duplicateScheduleIds = [];
+
+        for (const s of trackerData.schedules) {
+          if (!s) continue;
+          const key = `${(s.activity || '').trim().toLowerCase()}|${(s.startTime || '').trim()}|${(s.endTime || '').trim()}|${(s.category || 'Placement').toLowerCase()}|${(s.repeat || 'daily').toLowerCase()}`;
+          if (seenSchedules.has(key)) {
+            if (s.id && String(s.id).length > 20) {
+              duplicateScheduleIds.push(s.id);
+            }
+            changed = true;
+          } else {
+            seenSchedules.set(key, s);
+            uniqueSchedules.push(s);
+          }
+        }
+        trackerData.schedules = uniqueSchedules;
+
+        if (currentUser && duplicateScheduleIds.length > 0) {
+          duplicateScheduleIds.forEach(id => deleteScheduleCloud(id));
+        }
+      }
+
+      if (changed) {
+        saveTrackerData(trackerData);
+      }
+    }
+
     function getActiveSchedulesForDate(dataObj, dateStr) {
+      deduplicateTrackerData();
       return dataObj.schedules
         .filter((s) => isItemActiveOnDate(s, dateStr))
         .sort((a, b) => timeToMinutes(a.startTime) - timeToMinutes(b.startTime));
     }
 
     function getActiveTasksForDate(dataObj, dateStr) {
+      deduplicateTrackerData();
       return dataObj.tasks.filter((t) => isItemActiveOnDate(t, dateStr));
     }
 
@@ -3433,6 +3496,7 @@
           }
         }
 
+        deduplicateTrackerData();
         saveTrackerData(trackerData);
         loadProgress();
         renderActiveView();

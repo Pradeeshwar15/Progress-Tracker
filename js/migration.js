@@ -28,26 +28,38 @@ async function migrateLocalStorageToSupabase(userId) {
     }
 
     // 2. Migrate Tasks
+    const existingTasks = await fetchTasksCloud(userId);
     const taskIdMap = {}; // oldId -> newCloudId
     if (Array.isArray(legacyObj.tasks)) {
       for (const t of legacyObj.tasks) {
         if (!t.deletedDate) {
-          const created = await createTaskCloud(userId, t.name, t.category, t.repeat || 'daily');
-          if (created) {
-            taskIdMap[t.id] = created.id;
+          const match = existingTasks.find(et => (et.title || '').trim().toLowerCase() === (t.name || '').trim().toLowerCase());
+          if (match) {
+            taskIdMap[t.id] = match.id;
+          } else {
+            const created = await createTaskCloud(userId, t.name, t.category, t.repeat || 'daily');
+            if (created) {
+              taskIdMap[t.id] = created.id;
+            }
           }
         }
       }
     }
 
     // 3. Migrate Schedules
+    const existingSchedules = await fetchSchedulesCloud(userId);
     const scheduleIdMap = {}; // oldId -> newCloudId
     if (Array.isArray(legacyObj.schedules)) {
       for (const s of legacyObj.schedules) {
         if (!s.deletedDate) {
-          const created = await createScheduleCloud(userId, s.activity, s.startTime, s.endTime, s.category, s.repeat || 'daily');
-          if (created) {
-            scheduleIdMap[s.id] = created.id;
+          const match = existingSchedules.find(es => (es.title || '').trim().toLowerCase() === (s.activity || '').trim().toLowerCase() && (es.start_time || '').trim() === (s.startTime || '').trim());
+          if (match) {
+            scheduleIdMap[s.id] = match.id;
+          } else {
+            const created = await createScheduleCloud(userId, s.activity, s.startTime, s.endTime, s.category, s.repeat || 'daily');
+            if (created) {
+              scheduleIdMap[s.id] = created.id;
+            }
           }
         }
       }
