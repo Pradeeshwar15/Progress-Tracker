@@ -1797,20 +1797,45 @@
       };
     }
 
+    function ensureDefaultSchedulesAndTasks(dataObj) {
+      if (!dataObj) return getDefaultTrackerData();
+      const fresh = getDefaultTrackerData();
+      let modified = false;
+
+      if (!Array.isArray(dataObj.schedules)) dataObj.schedules = [];
+      if (!Array.isArray(dataObj.tasks)) dataObj.tasks = [];
+
+      const activeSchedules = dataObj.schedules.filter(s => s && !s.deletedDate);
+      if (activeSchedules.length === 0) {
+        dataObj.schedules = fresh.schedules;
+        modified = true;
+      }
+
+      const activeTasks = dataObj.tasks.filter(t => t && !t.deletedDate);
+      if (activeTasks.length === 0) {
+        dataObj.tasks = fresh.tasks;
+        modified = true;
+      }
+
+      if (modified) {
+        saveTrackerData(dataObj);
+      }
+      return dataObj;
+    }
+
     function loadTrackerData() {
       try {
         const raw = localStorage.getItem(STORAGE_KEY);
+        let parsed;
         if (!raw) {
-          const fresh = getDefaultTrackerData();
-          saveTrackerData(fresh);
-          return fresh;
+          parsed = getDefaultTrackerData();
+        } else {
+          parsed = JSON.parse(raw);
+          parsed.settings = parsed.settings || { startDate: todayStr() };
+          parsed.completions = parsed.completions || {};
+          parsed.notes = parsed.notes || {};
         }
-        const parsed = JSON.parse(raw);
-        parsed.settings = parsed.settings || { startDate: todayStr() };
-        parsed.schedules = (parsed.schedules && parsed.schedules.length > 0) ? parsed.schedules : getDefaultTrackerData().schedules;
-        parsed.tasks = (parsed.tasks && parsed.tasks.length > 0) ? parsed.tasks : getDefaultTrackerData().tasks;
-        parsed.completions = parsed.completions || {};
-        parsed.notes = parsed.notes || {};
+        ensureDefaultSchedulesAndTasks(parsed);
         return parsed;
       } catch (e) {
         console.error('Failed to load tracker data, setting defaults.', e);
@@ -2343,6 +2368,7 @@
 
     // ================= DASHBOARD HOME RENDERER =================
     function renderDashboardHome() {
+      ensureDefaultSchedulesAndTasks(trackerData);
       const today = todayStr();
       backfillHistoricalProgress(trackerData);
       saveDailyProgressSnapshot(today);
@@ -3812,6 +3838,10 @@
             createdDate: cs.created_at ? cs.created_at.split('T')[0] : todayStr(),
             deletedDate: null
           }));
+        } else if (trackerData.schedules && trackerData.schedules.length > 0) {
+          for (const s of trackerData.schedules) {
+            await createScheduleCloud(currentUser.id, s.activity, s.startTime, s.endTime, s.category, s.repeat);
+          }
         }
 
         if (cloudTasks.length > 0) {
@@ -3823,7 +3853,13 @@
             createdDate: ct.created_at ? ct.created_at.split('T')[0] : todayStr(),
             deletedDate: null
           }));
+        } else if (trackerData.tasks && trackerData.tasks.length > 0) {
+          for (const t of trackerData.tasks) {
+            await createTaskCloud(currentUser.id, t.name, t.category, t.repeat);
+          }
         }
+
+        ensureDefaultSchedulesAndTasks(trackerData);
 
         if (cloudCompletions.length > 0) {
           trackerData.completions = {};
