@@ -1973,7 +1973,7 @@
       const file = event.target.files[0];
       if (!file) return;
       const reader = new FileReader();
-      reader.onload = (e) => {
+      reader.onload = async (e) => {
         try {
           const imported = JSON.parse(e.target.result);
           if (imported.trackerData) {
@@ -1984,8 +1984,11 @@
           if (imported.patterns) state.completedPatterns = imported.patterns;
           if (imported.aptitude) state.completedAptitudeTopics = imported.aptitude;
           saveProgress();
+          if (currentUser) {
+            await syncCloudModuleProgress();
+          }
           renderActiveView();
-          showToast("Backup imported successfully!");
+          showToast("Backup imported & synced to Cloud successfully!");
         } catch (err) {
           alert("Invalid backup file format.");
         }
@@ -3064,9 +3067,27 @@
       container.innerHTML = html;
     }
 
-    function toggleProblemCompletion(problemId) {
+    async function syncCloudModuleProgress() {
+      if (!currentUser) return;
+      try {
+        for (const pid of state.completedProblems) {
+          await setCompletionCloud(currentUser.id, String(pid), 'leetcode', '2000-01-01', true);
+        }
+        for (const pat of state.completedPatterns) {
+          await setCompletionCloud(currentUser.id, String(pat), 'pattern', '2000-01-01', true);
+        }
+        for (const apt of state.completedAptitudeTopics) {
+          await setCompletionCloud(currentUser.id, String(apt), 'aptitude', '2000-01-01', true);
+        }
+      } catch (e) {
+        console.error("Cloud module sync error:", e);
+      }
+    }
+
+    async function toggleProblemCompletion(problemId) {
       const idx = state.completedProblems.indexOf(problemId);
-      if (idx > -1) {
+      const isDone = idx === -1;
+      if (!isDone) {
         state.completedProblems.splice(idx, 1);
         showToast(`Problem #${problemId} marked incomplete.`);
       } else {
@@ -3074,13 +3095,17 @@
         showToast(`Problem #${problemId} completed! Keep it up.`);
       }
       saveProgress();
+      if (currentUser) {
+        await setCompletionCloud(currentUser.id, String(problemId), 'leetcode', '2000-01-01', isDone);
+      }
       renderActiveViewContentOnly();
     }
 
-    function toggleAptitudeTopicCompletion(topicId) {
+    async function toggleAptitudeTopicCompletion(topicId) {
       const idx = state.completedAptitudeTopics.indexOf(topicId);
+      const isDone = idx === -1;
       const displayName = topicId.includes('·') ? topicId.split('·')[1].trim() : topicId;
-      if (idx > -1) {
+      if (!isDone) {
         state.completedAptitudeTopics.splice(idx, 1);
         showToast(`Topic "${displayName}" marked incomplete.`);
       } else {
@@ -3088,13 +3113,17 @@
         showToast(`Topic "${displayName}" completed!`);
       }
       saveProgress();
+      if (currentUser) {
+        await setCompletionCloud(currentUser.id, String(topicId), 'aptitude', '2000-01-01', isDone);
+      }
       renderActiveViewContentOnly();
     }
 
-    function togglePatternCompletion(patternNum) {
+    async function togglePatternCompletion(patternNum) {
       const idx = state.completedPatterns.indexOf(patternNum);
+      const isDone = idx === -1;
       const pattern = PATTERNS.find(p => p.num === patternNum);
-      if (idx > -1) {
+      if (!isDone) {
         state.completedPatterns.splice(idx, 1);
         showToast(`Pattern "${pattern.label}" marked incomplete.`);
       } else {
@@ -3102,6 +3131,9 @@
         showToast(`Pattern "${pattern.label}" marked Mastered!`);
       }
       saveProgress();
+      if (currentUser) {
+        await setCompletionCloud(currentUser.id, String(patternNum), 'pattern', '2000-01-01', isDone);
+      }
       renderPatternTabs();
       renderPatternDetail();
     }
@@ -3485,17 +3517,35 @@
 
         if (cloudCompletions.length > 0) {
           trackerData.completions = {};
+          const cloudLc = [];
+          const cloudPat = [];
+          const cloudApt = [];
+
           for (const comp of cloudCompletions) {
             const d = comp.date;
-            if (!trackerData.completions[d]) trackerData.completions[d] = { schedule: {}, tasks: {} };
-            if (comp.item_type === 'schedule') {
-              trackerData.completions[d].schedule[comp.item_id] = true;
-            } else if (comp.item_type === 'task') {
-              trackerData.completions[d].tasks[comp.item_id] = true;
+            if (comp.item_type === 'leetcode') {
+              cloudLc.push(isNaN(comp.item_id) ? comp.item_id : Number(comp.item_id));
+            } else if (comp.item_type === 'pattern') {
+              cloudPat.push(String(comp.item_id));
+            } else if (comp.item_type === 'aptitude') {
+              cloudApt.push(String(comp.item_id));
+            } else {
+              if (!trackerData.completions[d]) trackerData.completions[d] = { schedule: {}, tasks: {} };
+              if (comp.item_type === 'schedule') {
+                trackerData.completions[d].schedule[comp.item_id] = true;
+              } else if (comp.item_type === 'task') {
+                trackerData.completions[d].tasks[comp.item_id] = true;
+              }
             }
           }
+
+          state.completedProblems = Array.from(new Set([...state.completedProblems, ...cloudLc]));
+          state.completedPatterns = Array.from(new Set([...state.completedPatterns, ...cloudPat]));
+          state.completedAptitudeTopics = Array.from(new Set([...state.completedAptitudeTopics, ...cloudApt]));
+          saveProgress();
         }
 
+        await syncCloudModuleProgress();
         deduplicateTrackerData();
         saveTrackerData(trackerData);
         loadProgress();

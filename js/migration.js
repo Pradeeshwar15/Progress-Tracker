@@ -94,9 +94,46 @@ async function migrateLocalStorageToSupabase(userId) {
       }
     }
 
+    // 6. Migrate LeetCode, Patterns & Aptitude Progress
+    const rawLc = localStorage.getItem('prepsphere_leetcode_completed');
+    if (rawLc) {
+      try {
+        const arr = JSON.parse(rawLc);
+        if (Array.isArray(arr)) {
+          for (const pid of arr) {
+            await setCompletionCloud(userId, String(pid), 'leetcode', '2000-01-01', true);
+          }
+        }
+      } catch (e) {}
+    }
+
+    const rawPat = localStorage.getItem('prepsphere_patterns_completed');
+    if (rawPat) {
+      try {
+        const arr = JSON.parse(rawPat);
+        if (Array.isArray(arr)) {
+          for (const pid of arr) {
+            await setCompletionCloud(userId, String(pid), 'pattern', '2000-01-01', true);
+          }
+        }
+      } catch (e) {}
+    }
+
+    const rawApt = localStorage.getItem('prepsphere_aptitude_completed');
+    if (rawApt) {
+      try {
+        const arr = JSON.parse(rawApt);
+        if (Array.isArray(arr)) {
+          for (const tid of arr) {
+            await setCompletionCloud(userId, String(tid), 'aptitude', '2000-01-01', true);
+          }
+        }
+      } catch (e) {}
+    }
+
     // Mark migration as completed
     localStorage.setItem(MIGRATION_DONE_KEY, new Date().toISOString());
-    console.log("[Migration] Legacy data successfully migrated to Supabase Cloud!");
+    console.log("[Migration] Legacy data & study progress successfully migrated to Supabase Cloud!");
     return true;
   } catch (err) {
     console.error("[Migration] Error migrating data to cloud:", err);
