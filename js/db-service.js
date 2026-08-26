@@ -149,12 +149,13 @@ async function fetchCompletionsCloud(userId, dateStr) {
 
 async function setCompletionCloud(userId, itemId, itemType, dateStr, isCompleted) {
   if (!supabaseClient || !userId) return null;
+  const strId = String(itemId);
   if (isCompleted) {
     const { data, error } = await supabaseClient
       .from('completions')
       .upsert({
         user_id: userId,
-        item_id: itemId,
+        item_id: strId,
         item_type: itemType,
         date: dateStr,
         completed: true,
@@ -168,7 +169,7 @@ async function setCompletionCloud(userId, itemId, itemType, dateStr, isCompleted
       .from('completions')
       .delete()
       .eq('user_id', userId)
-      .eq('item_id', itemId)
+      .eq('item_id', strId)
       .eq('item_type', itemType)
       .eq('date', dateStr);
     if (error) console.error("Error removing completion:", error);

@@ -50,14 +50,25 @@ CREATE TABLE IF NOT EXISTS public.schedules (
 CREATE TABLE IF NOT EXISTS public.completions (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  item_id UUID NOT NULL,
-  item_type TEXT NOT NULL, -- 'task' or 'schedule'
+  item_id TEXT NOT NULL,
+  item_type TEXT NOT NULL, -- 'task', 'schedule', 'leetcode', 'pattern', 'aptitude'
   date DATE NOT NULL,
   completed BOOLEAN NOT NULL DEFAULT TRUE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
   CONSTRAINT unique_user_item_date UNIQUE (user_id, item_id, item_type, date)
 );
+
+-- Migration for existing completions table: convert item_id to TEXT
+DO $$ 
+BEGIN 
+  IF EXISTS (
+    SELECT 1 FROM information_schema.columns 
+    WHERE table_name='completions' AND column_name='item_id' AND data_type='uuid'
+  ) THEN 
+    ALTER TABLE public.completions ALTER COLUMN item_id TYPE TEXT USING item_id::text;
+  END IF;
+END $$;
 
 -- --------------------------------------------------------
 -- TABLE: daily_notes
