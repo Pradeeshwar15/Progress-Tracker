@@ -207,3 +207,42 @@ async function saveDailyNoteCloud(userId, dateStr, wentWell, distraction, tomorr
   if (error) console.error("Error saving daily note:", error);
   return data;
 }
+
+// Daily Progress Snapshot Operations (V3)
+async function fetchDailyProgressHistoryCloud(userId) {
+  if (!supabaseClient || !userId) return [];
+  const { data, error } = await supabaseClient
+    .from('daily_progress')
+    .select('*')
+    .eq('user_id', userId)
+    .order('date', { ascending: true });
+  if (error) console.error("Error fetching daily progress history:", error);
+  return data || [];
+}
+
+async function saveDailyProgressCloud(userId, progressRecord) {
+  if (!supabaseClient || !userId || !progressRecord || !progressRecord.date) return null;
+  const payload = {
+    user_id: userId,
+    date: progressRecord.date,
+    schedule_total: progressRecord.schedule_total || 0,
+    schedule_completed: progressRecord.schedule_completed || 0,
+    schedule_percentage: progressRecord.schedule_percentage || 0,
+    checklist_total: progressRecord.checklist_total || 0,
+    checklist_completed: progressRecord.checklist_completed || 0,
+    checklist_percentage: progressRecord.checklist_percentage || 0,
+    overall_percentage: progressRecord.overall_percentage || 0,
+    successful_day: !!progressRecord.successful_day,
+    focus_minutes: progressRecord.focus_minutes || 0,
+    updated_at: new Date().toISOString()
+  };
+
+  const { data, error } = await supabaseClient
+    .from('daily_progress')
+    .upsert(payload, { onConflict: 'user_id,date' })
+    .select()
+    .single();
+  if (error) console.error("Error saving daily progress record:", error);
+  return data;
+}
+

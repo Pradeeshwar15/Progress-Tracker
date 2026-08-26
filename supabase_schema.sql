@@ -159,6 +159,42 @@ CREATE POLICY "Users can delete their own daily notes" ON public.daily_notes
   FOR DELETE USING (auth.uid() = user_id);
 
 -- --------------------------------------------------------
+-- TABLE: daily_progress
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS public.daily_progress (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  date DATE NOT NULL,
+  schedule_total INTEGER DEFAULT 0,
+  schedule_completed INTEGER DEFAULT 0,
+  schedule_percentage NUMERIC DEFAULT 0,
+  checklist_total INTEGER DEFAULT 0,
+  checklist_completed INTEGER DEFAULT 0,
+  checklist_percentage NUMERIC DEFAULT 0,
+  overall_percentage NUMERIC DEFAULT 0,
+  successful_day BOOLEAN DEFAULT FALSE,
+  focus_minutes INTEGER DEFAULT 0,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
+  CONSTRAINT unique_user_daily_progress_date UNIQUE (user_id, date)
+);
+
+-- RLS for daily_progress
+ALTER TABLE public.daily_progress ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can view their own daily progress" ON public.daily_progress
+  FOR SELECT USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert their own daily progress" ON public.daily_progress
+  FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update their own daily progress" ON public.daily_progress
+  FOR UPDATE USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete their own daily progress" ON public.daily_progress
+  FOR DELETE USING (auth.uid() = user_id);
+
+-- --------------------------------------------------------
 -- TRIGGER FOR AUTOMATIC PROFILE CREATION ON SIGNUP
 -- --------------------------------------------------------
 CREATE OR REPLACE FUNCTION public.handle_new_user()
@@ -180,3 +216,4 @@ DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+
