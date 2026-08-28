@@ -4,13 +4,25 @@ const DEFAULT_SUPABASE_ANON_KEY = (typeof window !== 'undefined' && window.ENV_S
 
 
 
+function isInvalidCredential(val) {
+  if (!val || typeof val !== 'string') return true;
+  const v = val.trim().toLowerCase();
+  return (
+    v === '' ||
+    v === 'undefined' ||
+    v === 'null' ||
+    v.includes('your-project') ||
+    v.includes('your-actual') ||
+    v.includes('your-supabase') ||
+    v.includes('example') ||
+    v.includes('placeholder')
+  );
+}
+
 // Normalize Supabase URL if dashboard URL is entered by mistake
 function normalizeSupabaseUrl(rawUrl) {
-  if (!rawUrl || typeof rawUrl !== 'string') return DEFAULT_SUPABASE_URL;
+  if (isInvalidCredential(rawUrl)) return DEFAULT_SUPABASE_URL;
   let url = rawUrl.trim();
-  if (!url || url === 'undefined' || url === 'null' || url.includes('your-project-ref')) {
-    return DEFAULT_SUPABASE_URL;
-  }
   if (url.includes('supabase.com/dashboard/project/')) {
     const parts = url.split('/project/');
     if (parts[1]) {
@@ -26,11 +38,13 @@ function getSupabaseCredentials() {
   let storedUrl = localStorage.getItem('supabase_url');
   let storedKey = localStorage.getItem('supabase_key');
 
-  if (!storedUrl || storedUrl === 'undefined' || storedUrl === 'null' || storedUrl.includes('your-project-ref')) {
+  if (isInvalidCredential(storedUrl)) {
     storedUrl = DEFAULT_SUPABASE_URL;
+    localStorage.removeItem('supabase_url');
   }
-  if (!storedKey || storedKey === 'undefined' || storedKey === 'null' || storedKey.includes('your-supabase-anon-public-key')) {
+  if (isInvalidCredential(storedKey)) {
     storedKey = DEFAULT_SUPABASE_ANON_KEY;
+    localStorage.removeItem('supabase_key');
   }
 
   const url = normalizeSupabaseUrl(storedUrl);
