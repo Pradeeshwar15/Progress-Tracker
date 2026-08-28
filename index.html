@@ -162,16 +162,23 @@
     </div>
 
     <!-- Search and Actions -->
-    <div class="flex items-center gap-3">
-      <!-- Global Search -->
-      <div class="relative hidden sm:block w-48 md:w-64">
-        <i class="ti ti-search absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] text-xs"></i>
-        <input id="global-search" type="text" placeholder="Search..."
-          oninput="handleGlobalSearch(this.value)"
-          class="w-full pl-8 pr-3 py-1 bg-[#111820] border border-[#25303B] rounded-md text-xs text-[#F3F4F6] placeholder-[#9CA3AF] focus:outline-none focus:border-[#4F8CFF] transition-all">
-        <button id="search-clear-btn" onclick="clearGlobalSearch()"
-          class="hidden absolute right-2 top-1/2 -translate-y-1/2 text-[#9CA3AF] hover:text-[#F3F4F6]">
-          <i class="ti ti-x text-xs"></i>
+    <div class="flex items-center gap-2 md:gap-3">
+      <!-- Global Command Palette Trigger -->
+      <button onclick="openCommandPalette()" class="hidden md:flex items-center gap-1.5 px-2.5 py-1 bg-[#111820] border border-[#25303B] hover:border-[#4F8CFF]/50 rounded-md text-xs text-[#9CA3AF] hover:text-[#F3F4F6] transition font-mono shadow-sm group">
+        <i class="ti ti-search text-xs group-hover:text-[#4F8CFF]"></i>
+        <span>Search / Command</span>
+        <kbd class="px-1.5 py-0.5 text-[10px] bg-[#161F29] border border-[#25303B] rounded text-slate-300">Ctrl K</kbd>
+      </button>
+
+      <!-- Focus Sprint Pomodoro Header Bar -->
+      <div id="header-focus-timer" class="flex items-center gap-2 px-2.5 py-1 bg-[#111820] border border-[#25303B] rounded-md text-xs font-mono shadow-sm">
+        <span class="text-[10px] text-slate-400 uppercase font-semibold tracking-wider hidden lg:inline">Focus</span>
+        <button onclick="toggleFocusSprintTimer()" id="btn-focus-toggle" class="text-emerald-400 hover:text-emerald-300 transition" title="Start/Pause Focus Sprint">
+          <i id="icon-focus-state" class="ti ti-player-play-filled text-xs"></i>
+        </button>
+        <span id="header-focus-time" class="font-bold text-slate-200">25:00</span>
+        <button onclick="resetFocusSprintTimer()" class="text-slate-500 hover:text-slate-300 transition" title="Reset Focus Sprint">
+          <i class="ti ti-rotate-clockwise text-xs"></i>
         </button>
       </div>
 
@@ -187,11 +194,6 @@
         <span class="h-1.5 w-1.5 rounded-full bg-[#22C55E]"></span>
         <span id="sync-status-text">Synced</span>
       </div>
-
-      <!-- Notifications Icon -->
-      <button onclick="showToast('No new notifications')" class="p-1.5 text-[#9CA3AF] hover:text-[#F3F4F6] rounded-md hover:bg-[#161F29] transition" title="Notifications">
-        <i class="ti ti-bell text-base"></i>
-      </button>
 
       <!-- Profile Header Pill -->
       <div id="auth-header-pill" class="flex items-center gap-2">
@@ -1248,6 +1250,32 @@
         <button onclick="saveModalDateReflection()" class="px-4 py-2 bg-[#4F8CFF] hover:bg-[#3b79eb] text-white font-semibold text-xs rounded-md transition shadow-md">Save Changes</button>
       </div>
     </div>
+  <!-- GLOBAL COMMAND PALETTE MODAL (CTRL + K) -->
+  <div id="modal-command-palette" onclick="closeCommandPaletteBackdrop(event)" class="fixed inset-0 z-50 flex items-start justify-center pt-16 md:pt-24 bg-slate-950/80 backdrop-blur-md hidden p-4 transition-all duration-200">
+    <div id="command-palette-box" class="bg-[#0D131C] border border-[#25303B] rounded-2xl w-full max-w-xl shadow-2xl overflow-hidden transform scale-95 transition-all duration-200">
+      <!-- Search Input -->
+      <div class="flex items-center px-4 py-3.5 border-b border-[#25303B] bg-[#111822]">
+        <i class="ti ti-search text-base text-[#4F8CFF] mr-3"></i>
+        <input id="command-palette-input" type="text" placeholder="Type a command or search (e.g., 'Aptitude', 'Focus', 'LeetCode')..."
+          oninput="renderCommandPaletteResults(this.value)"
+          onkeydown="handleCommandPaletteKeydown(event)"
+          class="w-full bg-transparent text-sm font-sans text-slate-100 placeholder-slate-500 focus:outline-none">
+        <kbd class="px-2 py-0.5 text-[10px] font-mono bg-[#18222E] border border-[#25303B] rounded text-slate-400">ESC</kbd>
+      </div>
+
+      <!-- Quick Action Commands List -->
+      <div id="command-palette-results" class="max-h-80 overflow-y-auto p-2 space-y-1 text-xs">
+        <!-- Dynamically rendered options -->
+      </div>
+
+      <div class="px-4 py-2 bg-[#090D14] border-t border-[#1E293B] flex items-center justify-between text-[11px] text-slate-500 font-mono">
+        <div class="flex items-center gap-3">
+          <span><kbd class="px-1 bg-[#161F29] border border-[#25303B] rounded text-slate-400">↑↓</kbd> Navigate</span>
+          <span><kbd class="px-1 bg-[#161F29] border border-[#25303B] rounded text-slate-400">↵</kbd> Select</span>
+        </div>
+        <span>Linear Command OS</span>
+      </div>
+    </div>
   </div>
 
   <!-- SETTINGS & PROFILE MODAL -->
@@ -2153,6 +2181,207 @@
       updateProgressMetrics();
     }
 
+    // ================= POMODORO FOCUS SPRINT ENGINE =================
+    let focusSprint = {
+      secondsLeft: 25 * 60,
+      totalSeconds: 25 * 60,
+      timerId: null,
+      isRunning: false
+    };
+
+    function updateFocusTimerDisplay() {
+      const elTime = document.getElementById('header-focus-time');
+      const elIcon = document.getElementById('icon-focus-state');
+      if (!elTime) return;
+      
+      const m = Math.floor(focusSprint.secondsLeft / 60);
+      const s = focusSprint.secondsLeft % 60;
+      elTime.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+      
+      if (elIcon) {
+        elIcon.className = focusSprint.isRunning ? "ti ti-player-pause-filled text-xs text-amber-400" : "ti ti-player-play-filled text-xs text-emerald-400";
+      }
+    }
+
+    function toggleFocusSprintTimer() {
+      if (focusSprint.isRunning) {
+        clearInterval(focusSprint.timerId);
+        focusSprint.timerId = null;
+        focusSprint.isRunning = false;
+        showToast("Focus Sprint paused.");
+      } else {
+        if (focusSprint.secondsLeft <= 0) focusSprint.secondsLeft = focusSprint.totalSeconds;
+        focusSprint.isRunning = true;
+        focusSprint.timerId = setInterval(() => {
+          if (focusSprint.secondsLeft > 0) {
+            focusSprint.secondsLeft--;
+            updateFocusTimerDisplay();
+          } else {
+            clearInterval(focusSprint.timerId);
+            focusSprint.timerId = null;
+            focusSprint.isRunning = false;
+            updateFocusTimerDisplay();
+            showToast("🎉 Focus Sprint completed! Great work!");
+            logFocusSprintCompletion(Math.round(focusSprint.totalSeconds / 60));
+          }
+        }, 1000);
+        showToast("Focus Sprint started! Stay disciplined.");
+      }
+      updateFocusTimerDisplay();
+    }
+
+    function resetFocusSprintTimer(minutes = 25) {
+      if (focusSprint.timerId) clearInterval(focusSprint.timerId);
+      focusSprint.timerId = null;
+      focusSprint.isRunning = false;
+      focusSprint.totalSeconds = minutes * 60;
+      focusSprint.secondsLeft = minutes * 60;
+      updateFocusTimerDisplay();
+      showToast(`Sprint reset to ${minutes} minutes.`);
+    }
+
+    function logFocusSprintCompletion(mins) {
+      const today = todayStr();
+      if (!trackerData.completions[today]) trackerData.completions[today] = { schedule: {}, tasks: {} };
+      trackerData.completions[today].focusMins = (trackerData.completions[today].focusMins || 0) + mins;
+      saveTrackerData(trackerData);
+      renderActiveViewContentOnly();
+    }
+
+    // ================= GLOBAL COMMAND PALETTE ENGINE =================
+    let commandPaletteSelectedIndex = 0;
+    const COMMAND_ITEMS = [
+      { id: 'nav-home', title: 'Go to Today Dashboard', icon: 'ti-smart-home', category: 'Navigation', action: () => navigateTo('home') },
+      { id: 'nav-tracker', title: 'Go to Routine & Tasks', icon: 'ti-clock', category: 'Navigation', action: () => navigateTo('tracker') },
+      { id: 'nav-analytics', title: 'View Progress Analytics', icon: 'ti-chart-dots', category: 'Analytics', action: () => navigateTo('analytics') },
+      { id: 'nav-history', title: 'View History & Calendar', icon: 'ti-calendar', category: 'History', action: () => navigateTo('history') },
+      { id: 'nav-aptitude', title: 'Explore Aptitude Track', icon: 'ti-brain', category: 'Study', action: () => navigateTo('aptitude') },
+      { id: 'nav-leetcode', title: 'Open LeetCode 75 Grind', icon: 'ti-code', category: 'Study', action: () => navigateTo('leetcode') },
+      { id: 'nav-patterns', title: 'Study DSA Patterns', icon: 'ti-subtask', category: 'Study', action: () => navigateTo('patterns') },
+      { id: 'act-add-task', title: 'Add New Daily Task', icon: 'ti-plus', category: 'Actions', action: () => { closeCommandPalette(); openTaskModal(); } },
+      { id: 'act-add-sch', title: 'Add New Schedule Block', icon: 'ti-plus', category: 'Actions', action: () => { closeCommandPalette(); openScheduleModal(); } },
+      { id: 'act-sprint-25', title: 'Start 25m Focus Sprint', icon: 'ti-player-play', category: 'Focus', action: () => { resetFocusSprintTimer(25); toggleFocusSprintTimer(); closeCommandPalette(); } },
+      { id: 'act-sprint-50', title: 'Start 50m Deep Work Session', icon: 'ti-flame', category: 'Focus', action: () => { resetFocusSprintTimer(50); toggleFocusSprintTimer(); closeCommandPalette(); } },
+      { id: 'act-settings', title: 'Open Credentials & Settings', icon: 'ti-settings', category: 'Settings', action: () => { closeCommandPalette(); openSettingsModal(); } }
+    ];
+
+    function openCommandPalette() {
+      const modal = document.getElementById('modal-command-palette');
+      const input = document.getElementById('command-palette-input');
+      if (!modal) return;
+      modal.classList.remove('hidden');
+      setTimeout(() => {
+        const box = document.getElementById('command-palette-box');
+        if (box) {
+          box.classList.remove('scale-95');
+          box.classList.add('scale-100');
+        }
+        if (input) {
+          input.value = '';
+          input.focus();
+          renderCommandPaletteResults('');
+        }
+      }, 20);
+    }
+
+    function closeCommandPalette() {
+      const modal = document.getElementById('modal-command-palette');
+      const box = document.getElementById('command-palette-box');
+      if (!modal) return;
+      if (box) {
+        box.classList.remove('scale-100');
+        box.classList.add('scale-95');
+      }
+      setTimeout(() => {
+        modal.classList.add('hidden');
+      }, 150);
+    }
+
+    function closeCommandPaletteBackdrop(event) {
+      if (event.target.id === 'modal-command-palette') {
+        closeCommandPalette();
+      }
+    }
+
+    function renderCommandPaletteResults(query = '') {
+      const container = document.getElementById('command-palette-results');
+      if (!container) return;
+
+      const q = query.trim().toLowerCase();
+      const filtered = COMMAND_ITEMS.filter(item => 
+        item.title.toLowerCase().includes(q) || item.category.toLowerCase().includes(q)
+      );
+
+      if (filtered.length === 0) {
+        container.innerHTML = `<div class="p-6 text-center text-slate-500 font-mono">No matching commands found.</div>`;
+        return;
+      }
+
+      commandPaletteSelectedIndex = Math.min(commandPaletteSelectedIndex, filtered.length - 1);
+      if (commandPaletteSelectedIndex < 0) commandPaletteSelectedIndex = 0;
+
+      container.innerHTML = filtered.map((item, idx) => {
+        const isSelected = idx === commandPaletteSelectedIndex;
+        return `
+          <div onclick="executeCommandItem('${item.id}')"
+            class="flex items-center justify-between px-3 py-2.5 rounded-xl cursor-pointer transition ${isSelected ? 'bg-[#182535] text-white border border-[#3B82F6]/40' : 'text-slate-300 hover:bg-[#111822]'}">
+            <div class="flex items-center gap-2.5">
+              <div class="h-7 w-7 rounded-lg ${isSelected ? 'bg-[#3B82F6] text-white' : 'bg-[#161F29] text-slate-400'} flex items-center justify-center">
+                <i class="ti ${item.icon} text-sm"></i>
+              </div>
+              <span class="font-medium text-xs">${escapeHtml(item.title)}</span>
+            </div>
+            <span class="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-[#161F29] border border-[#25303B] text-slate-400">${item.category}</span>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function executeCommandItem(itemId) {
+      const item = COMMAND_ITEMS.find(i => i.id === itemId);
+      if (item) {
+        item.action();
+        closeCommandPalette();
+      }
+    }
+
+    function handleCommandPaletteKeydown(event) {
+      const input = document.getElementById('command-palette-input');
+      const query = input ? input.value.trim().toLowerCase() : '';
+      const filtered = COMMAND_ITEMS.filter(item => 
+        item.title.toLowerCase().includes(query) || item.category.toLowerCase().includes(query)
+      );
+
+      if (event.key === 'Escape') {
+        closeCommandPalette();
+      } else if (event.key === 'ArrowDown') {
+        event.preventDefault();
+        if (filtered.length > 0) {
+          commandPaletteSelectedIndex = (commandPaletteSelectedIndex + 1) % filtered.length;
+          renderCommandPaletteResults(query);
+        }
+      } else if (event.key === 'ArrowUp') {
+        event.preventDefault();
+        if (filtered.length > 0) {
+          commandPaletteSelectedIndex = (commandPaletteSelectedIndex - 1 + filtered.length) % filtered.length;
+          renderCommandPaletteResults(query);
+        }
+      } else if (event.key === 'Enter') {
+        event.preventDefault();
+        if (filtered[commandPaletteSelectedIndex]) {
+          executeCommandItem(filtered[commandPaletteSelectedIndex].id);
+        }
+      }
+    }
+
+    // Global Keyboard Shortcut Listener (Ctrl+K / Cmd+K)
+    window.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        openCommandPalette();
+      }
+    });
+
     function resetAllProgress() {
       if (confirm("Are you sure you want to reset ALL study progress and tracker items? This will reset LeetCode, Aptitude, Patterns, and Placement Tracker defaults.")) {
         localStorage.removeItem('prepsphere_leetcode_completed');
@@ -2676,26 +2905,40 @@
       showToast("Reflection note saved successfully!");
     }
 
-    async function toggleSchedule(id) {
+    function toggleSchedule(id) {
       const today = todayStr();
       toggleScheduleCompletion(trackerData, today, id);
       saveTrackerData(trackerData);
       const done = isScheduleDone(trackerData, today, id);
-      if (currentUser) {
-        await setCompletionCloud(currentUser.id, id, 'schedule', today, done);
-      }
+      
+      // Update UI instantly (0ms latency)
       renderActiveViewContentOnly();
+      updateProgressMetrics();
+
+      // Asynchronous background cloud sync
+      if (typeof currentUser !== 'undefined' && currentUser && !currentUser.isLocalFallback) {
+        setCompletionCloud(currentUser.id, id, 'schedule', today, done).catch(err => {
+          console.warn("Background schedule sync note:", err);
+        });
+      }
     }
 
-    async function toggleTask(id) {
+    function toggleTask(id) {
       const today = todayStr();
       toggleTaskCompletion(trackerData, today, id);
       saveTrackerData(trackerData);
       const done = isTaskDone(trackerData, today, id);
-      if (currentUser) {
-        await setCompletionCloud(currentUser.id, id, 'task', today, done);
-      }
+
+      // Update UI instantly (0ms latency)
       renderActiveViewContentOnly();
+      updateProgressMetrics();
+
+      // Asynchronous background cloud sync
+      if (typeof currentUser !== 'undefined' && currentUser && !currentUser.isLocalFallback) {
+        setCompletionCloud(currentUser.id, id, 'task', today, done).catch(err => {
+          console.warn("Background task sync note:", err);
+        });
+      }
     }
 
     // ================= 90-DAY TRACKER VIEW RENDERER =================
