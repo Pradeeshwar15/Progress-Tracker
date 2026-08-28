@@ -1,7 +1,7 @@
 // Supabase Client Initialization
-// Configure your Supabase credentials here or through environment settings
-const DEFAULT_SUPABASE_URL = (typeof window !== 'undefined' && window.ENV_SUPABASE_URL) ? window.ENV_SUPABASE_URL : "";
-const DEFAULT_SUPABASE_ANON_KEY = (typeof window !== 'undefined' && window.ENV_SUPABASE_KEY) ? window.ENV_SUPABASE_KEY : "";
+const DEFAULT_SUPABASE_URL = (typeof window !== 'undefined' && window.ENV_SUPABASE_URL) ? window.ENV_SUPABASE_URL : "https://dzxodwhnkjzofhzngkaf.supabase.co";
+const DEFAULT_SUPABASE_ANON_KEY = (typeof window !== 'undefined' && window.ENV_SUPABASE_KEY) ? window.ENV_SUPABASE_KEY : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR6eG9kd2hua2p6b2Zoem5na2FmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc3MjEzNDgsImV4cCI6MjEwMzI5NzM0OH0.6NN5auOnGqxth4U4aVCSY9mZZtj0qyKMYMMdiIhvqi8";
+
 
 
 // Normalize Supabase URL if dashboard URL is entered by mistake
