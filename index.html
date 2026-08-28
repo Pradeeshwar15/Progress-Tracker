@@ -5,8 +5,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pradeeshwar — 90-Day Placement Prep & Study Hub</title>
-  <!-- PWA Manifest -->
-  <link rel="manifest" href="./manifest.json">
+  <!-- PWA Manifest (Protocol Safe) -->
+  <script>
+    if (window.location.protocol && window.location.protocol.startsWith('http')) {
+      const manifestLink = document.createElement('link');
+      manifestLink.rel = 'manifest';
+      manifestLink.href = './manifest.json';
+      document.head.appendChild(manifestLink);
+    }
+  </script>
   <meta name="theme-color" content="#0B0F14">
   <!-- Google Fonts: Inter for UI & JetBrains Mono for Code -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -409,6 +416,93 @@
             </div>
           </div>
 
+          <!-- Quick Navigation Cards to Other Modules (Top of Dashboard) -->
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+            <!-- Aptitude Mastery Card -->
+            <div onclick="navigateTo('aptitude')"
+              class="group cursor-pointer relative overflow-hidden rounded-xl bg-[#111820] border border-[#25303B] hover:border-blue-500/50 p-5 transition-all duration-300 transform hover:-translate-y-1 shadow-lg glow-hover">
+              <div class="space-y-4">
+                <div class="flex items-center justify-between">
+                  <div class="h-10 w-10 rounded-lg bg-blue-500/10 flex items-center justify-center border border-blue-500/20 text-blue-400">
+                    <i class="ti ti-brain text-xl"></i>
+                  </div>
+                  <span class="text-[11px] font-mono uppercase px-2 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20">Module</span>
+                </div>
+
+                <div class="space-y-1">
+                  <h3 class="font-outfit font-bold text-lg text-slate-100 flex items-center gap-1.5 group-hover:text-blue-400 transition-colors">
+                    Aptitude Mastery
+                    <i class="ti ti-arrow-narrow-right text-base transform group-hover:translate-x-1 transition-transform"></i>
+                  </h3>
+                  <p class="text-xs text-slate-400 leading-relaxed">
+                    Master speed shortcuts, quantitative formulas, & logical deduction for tech rounds.
+                  </p>
+                </div>
+
+                <div class="flex items-center justify-between pt-3 border-t border-[#25303B]/60 text-xs">
+                  <span class="text-slate-500">4 Core Tracks</span>
+                  <span class="font-semibold text-blue-400 flex items-center gap-1">Open Module <i class="ti ti-chevron-right text-xs"></i></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- LeetCode Grind Card -->
+            <div onclick="navigateTo('leetcode')"
+              class="group cursor-pointer relative overflow-hidden rounded-xl bg-[#111820] border border-[#25303B] hover:border-emerald-500/50 p-5 transition-all duration-300 transform hover:-translate-y-1 shadow-lg glow-hover">
+              <div class="space-y-4">
+                <div class="flex items-center justify-between">
+                  <div class="h-10 w-10 rounded-lg bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 text-emerald-400">
+                    <i class="ti ti-code text-xl"></i>
+                  </div>
+                  <span class="text-[11px] font-mono uppercase px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">75 Grind</span>
+                </div>
+
+                <div class="space-y-1">
+                  <h3 class="font-outfit font-bold text-lg text-slate-100 flex items-center gap-1.5 group-hover:text-emerald-400 transition-colors">
+                    LeetCode 75 Grind
+                    <i class="ti ti-arrow-narrow-right text-base transform group-hover:translate-x-1 transition-transform"></i>
+                  </h3>
+                  <p class="text-xs text-slate-400 leading-relaxed">
+                    Tackle top 1% FAANG problems. Follow sliding window, trees, DP, & graph paths.
+                  </p>
+                </div>
+
+                <div class="flex items-center justify-between pt-3 border-t border-[#25303B]/60 text-xs">
+                  <span class="text-slate-500">52 Curated Tasks</span>
+                  <span id="home-leetcode-progress" class="font-semibold text-emerald-400 flex items-center gap-1">0% Completed <i class="ti ti-chevron-right text-xs"></i></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- DSA Coding Patterns Card -->
+            <div onclick="navigateTo('patterns')"
+              class="group cursor-pointer relative overflow-hidden rounded-xl bg-[#111820] border border-[#25303B] hover:border-purple-500/50 p-5 transition-all duration-300 transform hover:-translate-y-1 shadow-lg glow-hover">
+              <div class="space-y-4">
+                <div class="flex items-center justify-between">
+                  <div class="h-10 w-10 rounded-lg bg-purple-500/10 flex items-center justify-center border border-purple-500/20 text-purple-400">
+                    <i class="ti ti-template text-xl"></i>
+                  </div>
+                  <span class="text-[11px] font-mono uppercase px-2 py-0.5 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20">Patterns</span>
+                </div>
+
+                <div class="space-y-1">
+                  <h3 class="font-outfit font-bold text-lg text-slate-100 flex items-center gap-1.5 group-hover:text-purple-400 transition-colors">
+                    DSA Patterns Studio
+                    <i class="ti ti-arrow-narrow-right text-base transform group-hover:translate-x-1 transition-transform"></i>
+                  </h3>
+                  <p class="text-xs text-slate-400 leading-relaxed">
+                    Master the 10 core algorithmic blueprints for technical coding interviews.
+                  </p>
+                </div>
+
+                <div class="flex items-center justify-between pt-3 border-t border-[#25303B]/60 text-xs">
+                  <span class="text-slate-500">10 Blueprints</span>
+                  <span class="font-semibold text-purple-400 flex items-center gap-1">Explore Studio <i class="ti ti-chevron-right text-xs"></i></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <!-- Schedule & Checklist Grid -->
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
             <!-- Today's Schedule Card -->
@@ -501,139 +595,6 @@
             </div>
             <div id="dash-week-chart" class="space-y-2 pt-1">
               <!-- Dynamically populated bars -->
-            </div>
-          </div>
-        </section>
-
-          <!-- Quick Navigation Cards to Other Modules -->
-          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <!-- Aptitude Mastery Card -->
-            <div onclick="navigateTo('aptitude')"
-              class="group cursor-pointer relative overflow-hidden rounded-2xl bg-slate-900 border border-slate-800 hover:border-blue-500/50 p-6 md:p-8 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-xl shadow-slate-950 glow-hover">
-              <div
-                class="absolute top-0 right-0 h-32 w-32 rounded-full bg-blue-500/5 blur-[50px] group-hover:bg-blue-500/10 transition-all duration-300">
-              </div>
-
-              <div class="space-y-6">
-                <div
-                  class="h-12 w-12 rounded-xl bg-blue-500/10 flex items-center justify-center border border-blue-500/20 text-blue-400 group-hover:bg-blue-500/20 group-hover:border-blue-500/40 transition-colors">
-                  <i class="ti ti-brain text-2xl"></i>
-                </div>
-
-                <div class="space-y-2">
-                  <h3
-                    class="font-outfit font-bold text-xl md:text-2xl text-slate-100 flex items-center gap-1.5 group-hover:text-blue-400 transition-colors">
-                    Aptitude Mastery
-                    <i
-                      class="ti ti-arrow-narrow-right text-lg transform group-hover:translate-x-1 transition-transform"></i>
-                  </h3>
-                  <p class="text-sm text-slate-400 leading-relaxed">
-                    Master speed shortcuts, quantitative formulas, logical deduction puzzles, and verbal reasoning
-                    traps for TCS, Infosys, Accenture, and product firm rounds.
-                  </p>
-                </div>
-
-                <div class="grid grid-cols-3 gap-4 pt-4 border-t border-slate-800/80 text-xs">
-                  <div>
-                    <span class="block text-slate-500">Modules</span>
-                    <span class="font-semibold text-slate-200">4 Core Tracks</span>
-                  </div>
-                  <div>
-                    <span class="block text-slate-500">Shortcuts</span>
-                    <span class="font-semibold text-slate-200">35+ Speed Tricks</span>
-                  </div>
-                  <div>
-                    <span class="block text-slate-500">Weighting</span>
-                    <span class="font-semibold text-blue-400">High-Freq Focus</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- LeetCode Grind Card -->
-            <div onclick="navigateTo('leetcode')"
-              class="group cursor-pointer relative overflow-hidden rounded-2xl bg-slate-900 border border-slate-800 hover:border-emerald-500/50 p-6 md:p-8 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-xl shadow-slate-950 glow-hover">
-              <div
-                class="absolute top-0 right-0 h-32 w-32 rounded-full bg-emerald-500/5 blur-[50px] group-hover:bg-emerald-500/10 transition-all duration-300">
-              </div>
-
-              <div class="space-y-6">
-                <div
-                  class="h-12 w-12 rounded-xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 text-emerald-400 group-hover:bg-emerald-500/20 group-hover:border-emerald-500/40 transition-colors">
-                  <i class="ti ti-code text-2xl"></i>
-                </div>
-
-                <div class="space-y-2">
-                  <h3
-                    class="font-outfit font-bold text-xl md:text-2xl text-slate-100 flex items-center gap-1.5 group-hover:text-emerald-400 transition-colors">
-                    LeetCode Grind
-                    <i
-                      class="ti ti-arrow-narrow-right text-lg transform group-hover:translate-x-1 transition-transform"></i>
-                  </h3>
-                  <p class="text-sm text-slate-400 leading-relaxed">
-                    Tackle top 1% FAANG patterns. Follow a structured path through sliding windows, graph traversal,
-                    DFS/BFS, Union-Find, dynamic programming, and OOP design.
-                  </p>
-                </div>
-
-                <div class="grid grid-cols-3 gap-4 pt-4 border-t border-slate-800/80 text-xs">
-                  <div>
-                    <span class="block text-slate-500">Patterns</span>
-                    <span class="font-semibold text-slate-200">20+ Archetypes</span>
-                  </div>
-                  <div>
-                    <span class="block text-slate-500">Problems</span>
-                    <span class="font-semibold text-slate-200">52 Curated Tasks</span>
-                  </div>
-                  <div>
-                    <span class="block text-slate-500">Your Progress</span>
-                    <span id="home-leetcode-progress" class="font-semibold text-emerald-400">0%</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- DSA Coding Patterns Card -->
-            <div onclick="navigateTo('patterns')"
-              class="group cursor-pointer relative overflow-hidden rounded-2xl bg-slate-900 border border-slate-800 hover:border-purple-500/50 p-6 md:p-8 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-xl shadow-slate-950 glow-hover">
-              <div
-                class="absolute top-0 right-0 h-32 w-32 rounded-full bg-purple-500/5 blur-[50px] group-hover:bg-purple-500/10 transition-all duration-300">
-              </div>
-
-              <div class="space-y-6">
-                <div
-                  class="h-12 w-12 rounded-xl bg-purple-500/10 flex items-center justify-center border border-purple-500/20 text-purple-400 group-hover:bg-purple-500/20 group-hover:border-purple-500/40 transition-colors">
-                  <i class="ti ti-template text-2xl"></i>
-                </div>
-
-                <div class="space-y-2">
-                  <h3
-                    class="font-outfit font-bold text-xl md:text-2xl text-slate-100 flex items-center gap-1.5 group-hover:text-purple-400 transition-colors">
-                    DSA Coding Patterns
-                    <i
-                      class="ti ti-arrow-narrow-right text-lg transform group-hover:translate-x-1 transition-transform"></i>
-                  </h3>
-                  <p class="text-sm text-slate-400 leading-relaxed">
-                    Master the 10 core algorithmic blueprints for coding interviews. Learn mental invariants, avoid
-                    typical interview traps, and study gold standard implementations.
-                  </p>
-                </div>
-
-                <div class="grid grid-cols-3 gap-4 pt-4 border-t border-slate-800/80 text-xs">
-                  <div>
-                    <span class="block text-slate-500">Blueprints</span>
-                    <span class="font-semibold text-slate-200">10 Templates</span>
-                  </div>
-                  <div>
-                    <span class="block text-slate-500">Interviews</span>
-                    <span class="font-semibold text-slate-200">FAANG Focused</span>
-                  </div>
-                  <div>
-                    <span class="block text-slate-500">Resource</span>
-                    <span class="font-semibold text-purple-400">Interactive</span>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </section>
@@ -2673,6 +2634,13 @@
     }
 
     // ================= DASHBOARD HOME RENDERER =================
+    function formatFocusMinutes(mins) {
+      if (!mins || mins <= 0) return "0h 0m";
+      const h = Math.floor(mins / 60);
+      const m = mins % 60;
+      return `${h}h ${m}m`;
+    }
+
     function renderDashboardHome() {
       ensureDefaultSchedulesAndTasks(trackerData);
       const today = todayStr();
