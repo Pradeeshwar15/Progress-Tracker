@@ -2227,6 +2227,17 @@
 
     // ================= VIEW NAVIGATION =================
     function navigateTo(viewName, submoduleId = 0) {
+      if (viewName === 'tracker') {
+        state.activeView = 'home';
+        renderActiveView();
+        updateSidebarActiveStyles();
+        setTimeout(() => {
+          const el = document.getElementById('dash-schedule-list');
+          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 50);
+        return;
+      }
+
       state.activeView = viewName;
 
       if (viewName === 'aptitude') {
@@ -2366,6 +2377,93 @@
       }
     }
 
+    function ensureDefaultSchedulesAndTasks(dataObj) {
+      if (!dataObj) return;
+      if (!dataObj.schedules) dataObj.schedules = [];
+      if (!dataObj.tasks) dataObj.tasks = [];
+
+      const activeSchedules = dataObj.schedules.filter(s => !s.deletedDate);
+      if (activeSchedules.length === 0) {
+        dataObj.schedules = [
+          { id: 'sch_1', activity: 'Wake Up + Cold Water + Light Stretch', startTime: '05:00', endTime: '05:30', category: 'Health', repeat: 'daily', createdDate: '2026-01-01', deletedDate: null },
+          { id: 'sch_2', activity: 'Aptitude Practice (Quantitative / Reasoning)', startTime: '05:30', endTime: '06:30', category: 'Placement', repeat: 'daily', createdDate: '2026-01-01', deletedDate: null },
+          { id: 'sch_3', activity: 'DSA Problem Solving (LeetCode / Patterns)', startTime: '06:30', endTime: '08:00', category: 'Placement', repeat: 'daily', createdDate: '2026-01-01', deletedDate: null },
+          { id: 'sch_4', activity: 'Morning Workout / Fitness Routine', startTime: '08:00', endTime: '09:00', category: 'Fitness', repeat: 'daily', createdDate: '2026-01-01', deletedDate: null },
+          { id: 'sch_5', activity: 'Grooming & Healthy Breakfast', startTime: '09:00', endTime: '09:45', category: 'Grooming', repeat: 'daily', createdDate: '2026-01-01', deletedDate: null },
+          { id: 'sch_6', activity: 'Core Subject Review (OS / DBMS / CN)', startTime: '10:00', endTime: '11:30', category: 'Placement', repeat: 'daily', createdDate: '2026-01-01', deletedDate: null },
+          { id: 'sch_7', activity: 'Project Coding & Architecture Work', startTime: '11:30', endTime: '01:00', category: 'Project', repeat: 'daily', createdDate: '2026-01-01', deletedDate: null },
+          { id: 'sch_8', activity: 'Lunch & Break', startTime: '01:00', endTime: '02:00', category: 'Health', repeat: 'daily', createdDate: '2026-01-01', deletedDate: null },
+          { id: 'sch_9', activity: 'Mock Interview Prep & Verbal Ability', startTime: '02:00', endTime: '03:30', category: 'Placement', repeat: 'daily', createdDate: '2026-01-01', deletedDate: null },
+          { id: 'sch_10', activity: 'Revision & Daily Progress Review', startTime: '08:00', endTime: '09:00', category: 'Learning', repeat: 'daily', createdDate: '2026-01-01', deletedDate: null }
+        ];
+        saveTrackerData(dataObj);
+      }
+
+      const activeTasks = dataObj.tasks.filter(t => !t.deletedDate);
+      if (activeTasks.length === 0) {
+        dataObj.tasks = [
+          { id: 'task_1', name: 'Solve 2 LeetCode Medium/Hard Problems', category: 'Placement', repeat: 'daily', createdDate: '2026-01-01', deletedDate: null },
+          { id: 'task_2', name: 'Complete 1 Aptitude Topic & 15 Questions', category: 'Placement', repeat: 'daily', createdDate: '2026-01-01', deletedDate: null },
+          { id: 'task_3', name: 'Review 1 Core CS Topic (OS/DBMS/CN)', category: 'Placement', repeat: 'daily', createdDate: '2026-01-01', deletedDate: null },
+          { id: 'task_4', name: '45-Min Gym Workout / Cardio Session', category: 'Fitness', repeat: 'daily', createdDate: '2026-01-01', deletedDate: null },
+          { id: 'task_5', name: 'Drink 3+ Liters Water Today', category: 'Health', repeat: 'daily', createdDate: '2026-01-01', deletedDate: null },
+          { id: 'task_6', name: 'Maintain Proper Grooming Routine', category: 'Grooming', repeat: 'daily', createdDate: '2026-01-01', deletedDate: null },
+          { id: 'task_7', name: 'Push Code Commits to GitHub', category: 'Project', repeat: 'daily', createdDate: '2026-01-01', deletedDate: null },
+          { id: 'task_8', name: 'Fill Daily Reflection Notes & Focus Hours', category: 'Personal', repeat: 'daily', createdDate: '2026-01-01', deletedDate: null }
+        ];
+        saveTrackerData(dataObj);
+      }
+    }
+
+    function saveDailyProgressSnapshot(dateStr) {
+      if (!trackerData) return;
+      if (!trackerData.dailyProgress) trackerData.dailyProgress = {};
+      const progress = computeDailyProgress(trackerData, dateStr);
+      trackerData.dailyProgress[dateStr] = {
+        date: dateStr,
+        schedule_total: progress.scheduleTotal,
+        schedule_completed: progress.scheduleDone,
+        schedule_percentage: Math.round(progress.schedulePct),
+        checklist_total: progress.taskTotal,
+        checklist_completed: progress.taskDone,
+        checklist_percentage: Math.round(progress.taskPct),
+        overall_percentage: progress.overallRounded,
+        successful_day: progress.overallRounded >= 80,
+        focus_minutes: trackerData.dailyProgress[dateStr]?.focus_minutes || 0,
+        updated_at: new Date().toISOString()
+      };
+      saveTrackerData(trackerData);
+    }
+
+    function backfillHistoricalProgress(dataObj) {
+      if (!dataObj) return;
+      if (!dataObj.dailyProgress) dataObj.dailyProgress = {};
+      const start = dataObj.settings?.startDate || todayStr();
+      const today = todayStr();
+      let cursor = start;
+      let guard = 0;
+      while (cursor <= today && guard < 365) {
+        if (!dataObj.dailyProgress[cursor]) {
+          const progress = computeDailyProgress(dataObj, cursor);
+          dataObj.dailyProgress[cursor] = {
+            date: cursor,
+            schedule_total: progress.scheduleTotal,
+            schedule_completed: progress.scheduleDone,
+            schedule_percentage: Math.round(progress.schedulePct),
+            checklist_total: progress.taskTotal,
+            checklist_completed: progress.taskDone,
+            checklist_percentage: Math.round(progress.taskPct),
+            overall_percentage: progress.overallRounded,
+            successful_day: progress.overallRounded >= 80,
+            focus_minutes: 0,
+            updated_at: new Date().toISOString()
+          };
+        }
+        cursor = addDays(cursor, 1);
+        guard++;
+      }
+    }
+
     // ================= DASHBOARD HOME RENDERER =================
     function renderDashboardHome() {
       ensureDefaultSchedulesAndTasks(trackerData);
@@ -2484,23 +2582,26 @@
           schList.innerHTML = `<div class="p-4 bg-[#161F29] border border-[#25303B] rounded-xl text-center text-xs text-[#9CA3AF]">No schedule items for today. Click "+ Add Schedule" above.</div>`;
         } else {
           schList.innerHTML = `
-            <div class="relative pl-6 space-y-3.5 before:absolute before:left-2 before:top-2 before:bottom-2 before:w-0.5 before:bg-[#25303B]">
+            <div class="space-y-2">
               ${filteredSchedules.map(item => {
                 const done = isScheduleDone(trackerData, today, item.id);
                 return `
-                  <div class="relative flex items-center justify-between group">
-                    <div class="absolute -left-6 top-1/2 -translate-y-1/2 w-4 h-4 rounded-full border-2 ${done ? 'border-[#22C55E] bg-[#22C55E]' : 'border-[#4F8CFF] bg-[#111820]'} flex items-center justify-center transition-all">
-                      <span class="w-1.5 h-1.5 rounded-full ${done ? 'bg-white' : 'bg-[#4F8CFF]'}"></span>
-                    </div>
+                  <div class="flex items-center justify-between p-3 bg-[#161F29] border border-[#25303B] rounded-xl hover:border-[#4F8CFF]/50 transition group ${done ? 'opacity-60 bg-[#111820]' : ''}">
                     <div class="flex items-center gap-3 min-w-0">
-                      <span class="text-xs font-mono font-semibold text-[#4F8CFF] min-w-[48px]">${item.startTime}</span>
-                      <span class="text-xs md:text-sm font-medium text-[#F3F4F6] truncate ${done ? 'line-through text-[#9CA3AF]' : ''}">${escapeHtml(item.activity)}</span>
-                    </div>
-                    <div class="flex items-center gap-2">
-                      <span class="tag-badge">${item.category}</span>
-                      <button onclick="toggleSchedule('${item.id}')" class="h-6 w-6 rounded-full border ${done ? 'border-[#22C55E] bg-[#22C55E]/10 text-[#22C55E]' : 'border-[#25303B] bg-[#161F29] text-[#9CA3AF] hover:border-[#4F8CFF] hover:text-[#4F8CFF]'} flex items-center justify-center text-xs transition">
-                        ${done ? '✓' : '○'}
+                      <button onclick="toggleSchedule('${item.id}')" class="h-6 w-6 rounded-full border ${done ? 'border-[#22C55E] bg-[#22C55E]/20 text-[#22C55E]' : 'border-[#25303B] bg-[#111820] text-[#9CA3AF] hover:border-[#4F8CFF] hover:text-[#4F8CFF]'} flex items-center justify-center text-xs font-semibold transition flex-shrink-0">
+                        ${done ? '✓' : ''}
                       </button>
+                      <div class="flex flex-col min-w-0">
+                        <div class="flex items-center gap-2">
+                          <span class="text-xs font-mono font-semibold text-[#4F8CFF]">${item.startTime}${item.endTime ? ' – ' + item.endTime : ''}</span>
+                          <span class="tag-badge text-[10px]">${item.category}</span>
+                        </div>
+                        <span class="text-xs md:text-sm font-semibold text-[#F3F4F6] truncate ${done ? 'line-through text-[#9CA3AF]' : ''}">${escapeHtml(item.activity)}</span>
+                      </div>
+                    </div>
+                    <div class="flex items-center gap-1 opacity-80 group-hover:opacity-100 transition flex-shrink-0 ml-2">
+                      <button onclick="openScheduleModal('${item.id}')" class="p-1.5 rounded-lg text-[#9CA3AF] hover:text-[#F3F4F6] hover:bg-[#111820] transition" title="Edit Schedule"><i class="ti ti-edit text-xs"></i></button>
+                      <button onclick="openDeleteModal('schedule', '${item.id}')" class="p-1.5 rounded-lg text-[#9CA3AF] hover:text-[#EF4444] hover:bg-[#111820] transition" title="Delete Schedule"><i class="ti ti-trash text-xs"></i></button>
                     </div>
                   </div>
                 `;
@@ -2524,14 +2625,23 @@
           taskList.innerHTML = filteredTasks.map(item => {
             const done = isTaskDone(trackerData, today, item.id);
             return `
-              <div class="flex items-center justify-between p-2.5 bg-[#161F29] border border-[#25303B] rounded-xl hover:border-[#4F8CFF]/50 transition ${done ? 'opacity-50' : ''}">
+              <div class="flex items-center justify-between p-3 bg-[#161F29] border border-[#25303B] rounded-xl hover:border-[#4F8CFF]/50 transition group ${done ? 'opacity-60 bg-[#111820]' : ''}">
                 <div class="flex items-center gap-3 min-w-0">
-                  <button onclick="toggleTask('${item.id}')" class="h-6 w-6 rounded-full border ${done ? 'border-[#22C55E] bg-[#22C55E]/10 text-[#22C55E]' : 'border-[#25303B] bg-[#111820] text-[#9CA3AF] hover:border-[#4F8CFF] hover:text-[#4F8CFF]'} flex items-center justify-center text-xs font-medium transition flex-shrink-0">
-                    ${done ? '✓' : '○'}
+                  <button onclick="toggleTask('${item.id}')" class="h-6 w-6 rounded-full border ${done ? 'border-[#22C55E] bg-[#22C55E]/20 text-[#22C55E]' : 'border-[#25303B] bg-[#111820] text-[#9CA3AF] hover:border-[#22C55E] hover:text-[#22C55E]'} flex items-center justify-center text-xs font-semibold transition flex-shrink-0">
+                    ${done ? '✓' : ''}
                   </button>
-                  <span class="text-xs md:text-sm font-medium text-[#F3F4F6] truncate ${done ? 'line-through text-[#9CA3AF]' : ''}">${escapeHtml(item.name)}</span>
+                  <div class="flex flex-col min-w-0">
+                    <div class="flex items-center gap-2">
+                      <span class="tag-badge text-[10px]">${item.category}</span>
+                      <span class="text-[10px] text-[#9CA3AF] font-mono">(${item.repeat || 'daily'})</span>
+                    </div>
+                    <span class="text-xs md:text-sm font-semibold text-[#F3F4F6] truncate ${done ? 'line-through text-[#9CA3AF]' : ''}">${escapeHtml(item.name)}</span>
+                  </div>
                 </div>
-                <span class="tag-badge ml-2 flex-shrink-0">${item.category}</span>
+                <div class="flex items-center gap-1 opacity-80 group-hover:opacity-100 transition flex-shrink-0 ml-2">
+                  <button onclick="openTaskModal('${item.id}')" class="p-1.5 rounded-lg text-[#9CA3AF] hover:text-[#F3F4F6] hover:bg-[#111820] transition" title="Edit Task"><i class="ti ti-edit text-xs"></i></button>
+                  <button onclick="openDeleteModal('task', '${item.id}')" class="p-1.5 rounded-lg text-[#9CA3AF] hover:text-[#EF4444] hover:bg-[#111820] transition" title="Delete Task"><i class="ti ti-trash text-xs"></i></button>
+                </div>
               </div>
             `;
           }).join('');
@@ -3671,6 +3781,9 @@
       const email = document.getElementById('auth-input-email').value.trim();
       const password = document.getElementById('auth-input-password').value;
       const errDiv = document.getElementById('auth-error-msg');
+      const btnSubmit = document.getElementById('btn-auth-submit');
+      const btnSpan = btnSubmit ? btnSubmit.querySelector('span') : null;
+      const origText = btnSpan ? btnSpan.textContent : 'Submit';
       errDiv.textContent = '';
 
       if (!email || !password) {
@@ -3678,34 +3791,57 @@
         return;
       }
 
+      function resetBtn() {
+        if (btnSubmit) {
+          btnSubmit.disabled = false;
+          btnSubmit.classList.remove('opacity-75', 'cursor-not-allowed');
+        }
+        if (btnSpan) btnSpan.textContent = origText;
+      }
+
+      if (btnSubmit) {
+        btnSubmit.disabled = true;
+        btnSubmit.classList.add('opacity-75', 'cursor-not-allowed');
+      }
+      if (btnSpan) btnSpan.innerHTML = `<i class="ti ti-loader animate-spin text-sm mr-1"></i> Authenticating...`;
+
       try {
         if (authMode === 'signup') {
           const name = document.getElementById('auth-input-name').value.trim();
           const confirm = document.getElementById('auth-input-confirm').value;
-          if (!name) { errDiv.textContent = 'Please enter your name.'; return; }
-          if (password !== confirm) { errDiv.textContent = 'Passwords do not match.'; return; }
-          if (password.length < 6) { errDiv.textContent = 'Password must be at least 6 characters.'; return; }
+          if (!name) { errDiv.textContent = 'Please enter your name.'; resetBtn(); return; }
+          if (password !== confirm) { errDiv.textContent = 'Passwords do not match.'; resetBtn(); return; }
+          if (password.length < 6) { errDiv.textContent = 'Password must be at least 6 characters.'; resetBtn(); return; }
 
           const res = await signUpUser(name, email, password);
           if (res && res.user && !res.session) {
             errDiv.innerHTML = '<span class="text-amber-400 font-medium leading-relaxed block bg-amber-500/10 p-2.5 rounded-lg border border-amber-500/20">Account registered! Check your email inbox to confirm registration, OR turn off <strong>Confirm email</strong> in your Supabase Auth Settings to log in immediately.</span>';
             showToast("Account created! Confirmation required.");
-          } else {
-            updateAuthUI();
-            await syncCloudData();
-            showToast("Account created & logged in successfully!");
-            closeAuthModal();
+            resetBtn();
+            return;
           }
         } else {
           await loginUser(email, password);
-          updateAuthUI();
-          await syncCloudData();
-          showToast("Logged in successfully!");
-          closeAuthModal();
         }
+
+        // Close auth modal & update UI immediately for instant feedback
+        updateAuthUI();
+        closeAuthModal();
+        resetBtn();
+        showToast("Logged in successfully! Syncing data...");
+
+        // Perform cloud data sync in background
+        syncCloudData().then(() => {
+          renderActiveView();
+          showToast("Cloud sync complete!");
+        }).catch(err => {
+          console.error("Post-login sync error:", err);
+        });
+
       } catch (err) {
         console.error("Auth error:", err);
         errDiv.textContent = err.message || 'Authentication failed.';
+        resetBtn();
       }
     }
 
