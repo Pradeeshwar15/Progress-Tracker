@@ -54,7 +54,11 @@ function getSupabaseCredentials() {
 
 let supabaseClient = null;
 
-function initSupabase() {
+function initSupabase(forceDefault = false) {
+  if (forceDefault) {
+    localStorage.removeItem('supabase_url');
+    localStorage.removeItem('supabase_key');
+  }
   const { url, key } = getSupabaseCredentials();
 
   const createClientFn = (window.supabase && window.supabase.createClient) ||
