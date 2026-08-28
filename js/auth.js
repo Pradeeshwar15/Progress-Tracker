@@ -4,18 +4,22 @@ let currentUser = null;
 let currentSession = null;
 
 async function signUpUser(name, email, password) {
-  if (!supabaseClient) {
-    initSupabase();
-  }
+  initSupabase();
   if (!supabaseClient) throw new Error("Supabase client is not connected. Please check your network or credentials in Settings.");
   
-  const { data, error } = await supabaseClient.auth.signUp({
+  const signUpPromise = supabaseClient.auth.signUp({
     email,
     password,
     options: {
       data: { name: name }
     }
   });
+
+  const timeoutPromise = new Promise((_, reject) =>
+    setTimeout(() => reject(new Error("Sign up request timed out. Please check network connection.")), 10000)
+  );
+
+  const { data, error } = await Promise.race([signUpPromise, timeoutPromise]);
 
   if (error) throw error;
   
@@ -27,15 +31,19 @@ async function signUpUser(name, email, password) {
 }
 
 async function loginUser(email, password) {
-  if (!supabaseClient) {
-    initSupabase();
-  }
+  initSupabase();
   if (!supabaseClient) throw new Error("Supabase client is not connected. Please check your network or credentials in Settings.");
 
-  const { data, error } = await supabaseClient.auth.signInWithPassword({
+  const loginPromise = supabaseClient.auth.signInWithPassword({
     email,
     password
   });
+
+  const timeoutPromise = new Promise((_, reject) =>
+    setTimeout(() => reject(new Error("Login request timed out. Please check network connection.")), 10000)
+  );
+
+  const { data, error } = await Promise.race([loginPromise, timeoutPromise]);
 
   if (error) throw error;
 
