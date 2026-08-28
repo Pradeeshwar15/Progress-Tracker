@@ -2240,13 +2240,16 @@
     // ================= VIEW NAVIGATION =================
     function navigateTo(viewName, submoduleId = 0) {
       if (viewName === 'tracker') {
-        state.activeView = 'home';
+        state.activeView = 'tracker';
         renderActiveView();
         updateSidebarActiveStyles();
-        setTimeout(() => {
-          const el = document.getElementById('dash-schedule-list');
-          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 50);
+        document.querySelector('main').scrollTo({ top: 0, behavior: 'smooth' });
+        const sidebar = document.getElementById('sidebar-nav');
+        const backdrop = document.getElementById('sidebar-backdrop');
+        if (sidebar && !sidebar.classList.contains('-translate-x-full')) {
+          sidebar.classList.add('-translate-x-full');
+          backdrop.classList.add('hidden');
+        }
         return;
       }
 
