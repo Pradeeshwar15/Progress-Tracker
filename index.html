@@ -1809,12 +1809,22 @@
       if (activeSchedules.length === 0) {
         dataObj.schedules = fresh.schedules;
         modified = true;
+        if (typeof currentUser !== 'undefined' && currentUser) {
+          fresh.schedules.forEach(s => {
+            createScheduleCloud(currentUser.id, s.activity, s.startTime, s.endTime, s.category, s.repeat);
+          });
+        }
       }
 
       const activeTasks = dataObj.tasks.filter(t => t && !t.deletedDate);
       if (activeTasks.length === 0) {
         dataObj.tasks = fresh.tasks;
         modified = true;
+        if (typeof currentUser !== 'undefined' && currentUser) {
+          fresh.tasks.forEach(t => {
+            createTaskCloud(currentUser.id, t.name, t.category, t.repeat);
+          });
+        }
       }
 
       if (modified) {
@@ -1862,8 +1872,10 @@
 
       if (deletedDay && dateStr >= deletedDay) return false;
 
+      const repeatType = (item.repeat || 'daily').toLowerCase();
       const dow = parseDate(dateStr).getDay(); // 0 Sun .. 6 Sat
-      switch (item.repeat) {
+
+      switch (repeatType) {
         case 'once': return dateStr === createdDay;
         case 'daily': return true;
         case 'weekdays': return dow !== 0 && dow !== 6;
@@ -2377,43 +2389,7 @@
       }
     }
 
-    function ensureDefaultSchedulesAndTasks(dataObj) {
-      if (!dataObj) return;
-      if (!dataObj.schedules) dataObj.schedules = [];
-      if (!dataObj.tasks) dataObj.tasks = [];
 
-      const activeSchedules = dataObj.schedules.filter(s => !s.deletedDate);
-      if (activeSchedules.length === 0) {
-        dataObj.schedules = [
-          { id: 'sch_1', activity: 'Wake Up + Cold Water + Light Stretch', startTime: '05:00', endTime: '05:30', category: 'Health', repeat: 'daily', createdDate: '2026-01-01', deletedDate: null },
-          { id: 'sch_2', activity: 'Aptitude Practice (Quantitative / Reasoning)', startTime: '05:30', endTime: '06:30', category: 'Placement', repeat: 'daily', createdDate: '2026-01-01', deletedDate: null },
-          { id: 'sch_3', activity: 'DSA Problem Solving (LeetCode / Patterns)', startTime: '06:30', endTime: '08:00', category: 'Placement', repeat: 'daily', createdDate: '2026-01-01', deletedDate: null },
-          { id: 'sch_4', activity: 'Morning Workout / Fitness Routine', startTime: '08:00', endTime: '09:00', category: 'Fitness', repeat: 'daily', createdDate: '2026-01-01', deletedDate: null },
-          { id: 'sch_5', activity: 'Grooming & Healthy Breakfast', startTime: '09:00', endTime: '09:45', category: 'Grooming', repeat: 'daily', createdDate: '2026-01-01', deletedDate: null },
-          { id: 'sch_6', activity: 'Core Subject Review (OS / DBMS / CN)', startTime: '10:00', endTime: '11:30', category: 'Placement', repeat: 'daily', createdDate: '2026-01-01', deletedDate: null },
-          { id: 'sch_7', activity: 'Project Coding & Architecture Work', startTime: '11:30', endTime: '01:00', category: 'Project', repeat: 'daily', createdDate: '2026-01-01', deletedDate: null },
-          { id: 'sch_8', activity: 'Lunch & Break', startTime: '01:00', endTime: '02:00', category: 'Health', repeat: 'daily', createdDate: '2026-01-01', deletedDate: null },
-          { id: 'sch_9', activity: 'Mock Interview Prep & Verbal Ability', startTime: '02:00', endTime: '03:30', category: 'Placement', repeat: 'daily', createdDate: '2026-01-01', deletedDate: null },
-          { id: 'sch_10', activity: 'Revision & Daily Progress Review', startTime: '08:00', endTime: '09:00', category: 'Learning', repeat: 'daily', createdDate: '2026-01-01', deletedDate: null }
-        ];
-        saveTrackerData(dataObj);
-      }
-
-      const activeTasks = dataObj.tasks.filter(t => !t.deletedDate);
-      if (activeTasks.length === 0) {
-        dataObj.tasks = [
-          { id: 'task_1', name: 'Solve 2 LeetCode Medium/Hard Problems', category: 'Placement', repeat: 'daily', createdDate: '2026-01-01', deletedDate: null },
-          { id: 'task_2', name: 'Complete 1 Aptitude Topic & 15 Questions', category: 'Placement', repeat: 'daily', createdDate: '2026-01-01', deletedDate: null },
-          { id: 'task_3', name: 'Review 1 Core CS Topic (OS/DBMS/CN)', category: 'Placement', repeat: 'daily', createdDate: '2026-01-01', deletedDate: null },
-          { id: 'task_4', name: '45-Min Gym Workout / Cardio Session', category: 'Fitness', repeat: 'daily', createdDate: '2026-01-01', deletedDate: null },
-          { id: 'task_5', name: 'Drink 3+ Liters Water Today', category: 'Health', repeat: 'daily', createdDate: '2026-01-01', deletedDate: null },
-          { id: 'task_6', name: 'Maintain Proper Grooming Routine', category: 'Grooming', repeat: 'daily', createdDate: '2026-01-01', deletedDate: null },
-          { id: 'task_7', name: 'Push Code Commits to GitHub', category: 'Project', repeat: 'daily', createdDate: '2026-01-01', deletedDate: null },
-          { id: 'task_8', name: 'Fill Daily Reflection Notes & Focus Hours', category: 'Personal', repeat: 'daily', createdDate: '2026-01-01', deletedDate: null }
-        ];
-        saveTrackerData(dataObj);
-      }
-    }
 
     function saveDailyProgressSnapshot(dateStr) {
       if (!trackerData) return;
