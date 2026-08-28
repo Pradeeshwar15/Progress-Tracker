@@ -552,10 +552,10 @@
                 <span class="text-xs font-semibold text-[#F3F4F6]">Record Today's Focus Time:</span>
               </div>
               <div class="flex items-center gap-2 text-xs">
-                <input type="number" id="dash-focus-hours" min="0" max="24" placeholder="0"
+                <input type="number" id="dash-focus-hours" min="0" max="24" placeholder="0" oninput="autoSaveFocusTime()"
                   class="w-14 bg-[#111820] border border-[#25303B] text-center text-[#F3F4F6] py-1 rounded focus:outline-none focus:border-[#4F8CFF] font-bold">
                 <span class="text-[#9CA3AF]">hrs</span>
-                <input type="number" id="dash-focus-minutes" min="0" max="59" placeholder="0"
+                <input type="number" id="dash-focus-minutes" min="0" max="59" placeholder="0" oninput="autoSaveFocusTime()"
                   class="w-14 bg-[#111820] border border-[#25303B] text-center text-[#F3F4F6] py-1 rounded focus:outline-none focus:border-[#4F8CFF] font-bold">
                 <span class="text-[#9CA3AF]">mins</span>
               </div>
@@ -564,17 +564,17 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
               <div>
                 <label class="block text-[#9CA3AF] mb-1 font-medium">What went well today?</label>
-                <textarea id="dash-note-went-well" placeholder="e.g. Completed 3 LeetCode problems" rows="2"
+                <textarea id="dash-note-went-well" oninput="autoSaveDashboardNote()" placeholder="e.g. Completed 3 LeetCode problems" rows="2"
                   class="w-full bg-[#161F29] border border-[#25303B] rounded-lg p-2.5 text-[#F3F4F6] placeholder-[#9CA3AF]/60 focus:outline-none focus:border-[#4F8CFF]"></textarea>
               </div>
               <div>
                 <label class="block text-[#9CA3AF] mb-1 font-medium">What distracted me?</label>
-                <textarea id="dash-note-distracted" placeholder="e.g. Social media notifications" rows="2"
+                <textarea id="dash-note-distracted" oninput="autoSaveDashboardNote()" placeholder="e.g. Social media notifications" rows="2"
                   class="w-full bg-[#161F29] border border-[#25303B] rounded-lg p-2.5 text-[#F3F4F6] placeholder-[#9CA3AF]/60 focus:outline-none focus:border-[#4F8CFF]"></textarea>
               </div>
               <div>
                 <label class="block text-[#9CA3AF] mb-1 font-medium">Tomorrow's priority focus</label>
-                <textarea id="dash-note-tomorrow" placeholder="e.g. Graph Algorithms" rows="2"
+                <textarea id="dash-note-tomorrow" oninput="autoSaveDashboardNote()" placeholder="e.g. Graph Algorithms" rows="2"
                   class="w-full bg-[#161F29] border border-[#25303B] rounded-lg p-2.5 text-[#F3F4F6] placeholder-[#9CA3AF]/60 focus:outline-none focus:border-[#4F8CFF]"></textarea>
               </div>
             </div>
@@ -2855,6 +2855,60 @@
       }
     }
 
+    let noteAutoSaveTimer = null;
+    function autoSaveDashboardNote() {
+      const hint = document.getElementById('note-saved-hint');
+      if (hint) {
+        hint.textContent = "Saving...";
+        hint.classList.remove('opacity-0');
+      }
+      clearTimeout(noteAutoSaveTimer);
+      noteAutoSaveTimer = setTimeout(async () => {
+        const today = todayStr();
+        const wentWell = document.getElementById('dash-note-went-well')?.value || '';
+        const distracted = document.getElementById('dash-note-distracted')?.value || '';
+        const tomorrow = document.getElementById('dash-note-tomorrow')?.value || '';
+        
+        saveNote(trackerData, today, { wentWell, distracted, tomorrow });
+        saveTrackerData(trackerData);
+
+        if (typeof currentUser !== 'undefined' && currentUser && !currentUser.isLocalFallback) {
+          await saveDailyNoteCloud(currentUser.id, today, wentWell, distracted, tomorrow).catch(err => console.warn(err));
+        }
+
+        if (hint) {
+          hint.textContent = "✓ Auto-saved";
+          setTimeout(() => hint.classList.add('opacity-0'), 1500);
+        }
+      }, 400);
+    }
+
+    let focusAutoSaveTimer = null;
+    function autoSaveFocusTime() {
+      clearTimeout(focusAutoSaveTimer);
+      focusAutoSaveTimer = setTimeout(async () => {
+        const today = todayStr();
+        const hrs = parseInt(document.getElementById('dash-focus-hours')?.value) || 0;
+        const mins = parseInt(document.getElementById('dash-focus-minutes')?.value) || 0;
+        const totalMins = Math.max(0, (hrs * 60) + mins);
+
+        if (!trackerData.dailyProgress) trackerData.dailyProgress = {};
+        if (!trackerData.dailyProgress[today]) {
+          trackerData.dailyProgress[today] = { focus_minutes: totalMins, successful_day: false };
+        } else {
+          trackerData.dailyProgress[today].focus_minutes = totalMins;
+        }
+        saveTrackerData(trackerData);
+
+        const focusDisp = document.getElementById('stat-today-focus-display');
+        if (focusDisp) focusDisp.textContent = formatFocusMinutes(totalMins);
+
+        if (typeof currentUser !== 'undefined' && currentUser && !currentUser.isLocalFallback) {
+          await saveDailyProgressCloud(currentUser.id, today, { focus_minutes: totalMins }).catch(err => console.warn(err));
+        }
+      }, 500);
+    }
+
     async function saveDashboardNote() {
       const today = todayStr();
       const wentWell = document.getElementById('dash-note-went-well').value;
@@ -2994,32 +3048,76 @@
       const note = getNote(trackerData, dateStr);
 
       container.innerHTML = `
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-900 pb-3">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#25303B] pb-3">
           <div>
-            <span class="text-xs text-slate-400 font-medium">Recorded Log for</span>
-            <h4 class="font-outfit font-bold text-base text-white">${formatLongDate(dateStr)}</h4>
+            <span class="text-xs text-[#9CA3AF] font-medium">Recorded Log & Reflection for</span>
+            <h4 class="font-outfit font-bold text-base text-[#F3F4F6]">${formatLongDate(dateStr)}</h4>
           </div>
           <div class="flex items-center gap-3">
             <span class="text-xs font-semibold px-2.5 py-1 rounded-full border ${stateObj.className}">${stateObj.label}</span>
-            <span class="font-outfit font-extrabold text-2xl text-white">${progress.overallRounded}%</span>
+            <span class="font-outfit font-extrabold text-2xl text-[#F3F4F6]">${progress.overallRounded}%</span>
           </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-4 text-xs text-slate-300">
-          <div>Schedule Completed: <strong class="text-white font-mono">${progress.scheduleDone}/${progress.scheduleTotal}</strong> (${Math.round(progress.schedulePct)}%)</div>
-          <div>Tasks Completed: <strong class="text-white font-mono">${progress.taskDone}/${progress.taskTotal}</strong> (${Math.round(progress.taskPct)}%)</div>
+        <div class="grid grid-cols-2 gap-4 text-xs text-[#9CA3AF]">
+          <div>Schedule Completed: <strong class="text-[#F3F4F6] font-mono">${progress.scheduleDone}/${progress.scheduleTotal}</strong> (${Math.round(progress.schedulePct)}%)</div>
+          <div>Tasks Completed: <strong class="text-[#F3F4F6] font-mono">${progress.taskDone}/${progress.taskTotal}</strong> (${Math.round(progress.taskPct)}%)</div>
         </div>
 
-        <div class="space-y-2 pt-2 border-t border-slate-900">
-          <span class="block text-xs font-bold text-slate-400 uppercase tracking-wider">Reflection Note</span>
-          <div class="bg-slate-900/60 p-3 rounded-lg text-xs space-y-1 text-slate-300">
-            ${note.wentWell ? `<div><strong class="text-emerald-400">Went well:</strong> ${escapeHtml(note.wentWell)}</div>` : ''}
-            ${note.distracted ? `<div><strong class="text-amber-400">Distractions:</strong> ${escapeHtml(note.distracted)}</div>` : ''}
-            ${note.tomorrow ? `<div><strong class="text-purple-400">Next Priority:</strong> ${escapeHtml(note.tomorrow)}</div>` : ''}
-            ${(!note.wentWell && !note.distracted && !note.tomorrow) ? `<span class="text-slate-500 italic">No reflection notes saved for this date.</span>` : ''}
+        <div class="space-y-3 pt-3 border-t border-[#25303B]">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-[#F3F4F6] uppercase tracking-wider flex items-center gap-1.5">
+              <i class="ti ti-notes text-[#4F8CFF]"></i> Daily Reflection Journal (${dateStr})
+            </span>
+            <span id="history-saved-hint-${dateStr}" class="text-[11px] text-[#22C55E] font-medium opacity-0 transition-opacity">✓ Saved</span>
+          </div>
+
+          <div class="space-y-2 text-xs">
+            <div>
+              <label class="block text-[#9CA3AF] mb-1 font-medium">What went well on ${dateStr}?</label>
+              <textarea id="history-note-wentwell-${dateStr}" oninput="autoSaveHistoryNote('${dateStr}')" rows="2" placeholder="Notes on what went well..."
+                class="w-full bg-[#161F29] border border-[#25303B] rounded-lg p-2.5 text-[#F3F4F6] placeholder-[#9CA3AF]/60 focus:outline-none focus:border-[#4F8CFF]">${escapeHtml(note.wentWell)}</textarea>
+            </div>
+            <div>
+              <label class="block text-[#9CA3AF] mb-1 font-medium font-medium">Distractions / Obstacles:</label>
+              <textarea id="history-note-distracted-${dateStr}" oninput="autoSaveHistoryNote('${dateStr}')" rows="2" placeholder="Notes on distractions..."
+                class="w-full bg-[#161F29] border border-[#25303B] rounded-lg p-2.5 text-[#F3F4F6] placeholder-[#9CA3AF]/60 focus:outline-none focus:border-[#4F8CFF]">${escapeHtml(note.distracted)}</textarea>
+            </div>
+            <div>
+              <label class="block text-[#9CA3AF] mb-1 font-medium">Next Priority Focus:</label>
+              <textarea id="history-note-tomorrow-${dateStr}" oninput="autoSaveHistoryNote('${dateStr}')" rows="2" placeholder="Next priority items..."
+                class="w-full bg-[#161F29] border border-[#25303B] rounded-lg p-2.5 text-[#F3F4F6] placeholder-[#9CA3AF]/60 focus:outline-none focus:border-[#4F8CFF]">${escapeHtml(note.tomorrow)}</textarea>
+            </div>
           </div>
         </div>
       `;
+    }
+
+    let historyNoteAutoSaveTimer = null;
+    function autoSaveHistoryNote(dateStr) {
+      const hint = document.getElementById(`history-saved-hint-${dateStr}`);
+      if (hint) {
+        hint.textContent = "Saving...";
+        hint.classList.remove('opacity-0');
+      }
+      clearTimeout(historyNoteAutoSaveTimer);
+      historyNoteAutoSaveTimer = setTimeout(async () => {
+        const wentWell = document.getElementById(`history-note-wentwell-${dateStr}`)?.value || '';
+        const distracted = document.getElementById(`history-note-distracted-${dateStr}`)?.value || '';
+        const tomorrow = document.getElementById(`history-note-tomorrow-${dateStr}`)?.value || '';
+        
+        saveNote(trackerData, dateStr, { wentWell, distracted, tomorrow });
+        saveTrackerData(trackerData);
+
+        if (typeof currentUser !== 'undefined' && currentUser && !currentUser.isLocalFallback) {
+          await saveDailyNoteCloud(currentUser.id, dateStr, wentWell, distracted, tomorrow).catch(err => console.warn(err));
+        }
+
+        if (hint) {
+          hint.textContent = "✓ Saved to History";
+          setTimeout(() => hint.classList.add('opacity-0'), 1500);
+        }
+      }, 400);
     }
 
     // ================= MODAL HANDLERS =================
